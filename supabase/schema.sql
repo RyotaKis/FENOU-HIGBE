@@ -137,3 +137,24 @@ create policy "admin read newsletter_subscribers" on newsletter_subscribers for 
 
 create policy "public insert partnership_requests" on partnership_requests for insert with check (true);
 create policy "admin read partnership_requests" on partnership_requests for select using (auth.role() = 'authenticated');
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Storage : bucket public pour les images gérées depuis le panel admin
+-- (hero, portraits, illustrations de section — cf. src/lib/pageContentSchema.ts)
+-- ─────────────────────────────────────────────────────────────────────────
+
+insert into storage.buckets (id, name, public)
+values ('site-content', 'site-content', true)
+on conflict (id) do nothing;
+
+create policy "public read site-content" on storage.objects
+  for select using (bucket_id = 'site-content');
+
+create policy "admin write site-content" on storage.objects
+  for insert with check (bucket_id = 'site-content' and auth.role() = 'authenticated');
+
+create policy "admin update site-content" on storage.objects
+  for update using (bucket_id = 'site-content' and auth.role() = 'authenticated');
+
+create policy "admin delete site-content" on storage.objects
+  for delete using (bucket_id = 'site-content' and auth.role() = 'authenticated');

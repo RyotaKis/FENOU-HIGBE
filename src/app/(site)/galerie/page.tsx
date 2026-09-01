@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getEditionPhotos } from "@/lib/content";
+import { getPageContent, pick } from "@/lib/pageContent";
 import { SectionHeading } from "@/components/SectionHeading";
 import { ImageMasonry } from "@/components/gallery/ImageMasonry";
 import { PlaceholderImage } from "@/components/PlaceholderImage";
@@ -7,14 +8,22 @@ import { PlaceholderImage } from "@/components/PlaceholderImage";
 export const metadata: Metadata = { title: "Galerie" };
 
 export default async function GaleriePage() {
-  const photos = await getEditionPhotos();
+  const [photos, content] = await Promise.all([
+    getEditionPhotos(),
+    getPageContent("galerie"),
+  ]);
+  const hero = content.hero;
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
       <SectionHeading
-        eyebrow="Ambiance"
-        title="Galerie"
-        intro="Photos et vidéos qui donnent envie d'y être — édition après édition."
+        eyebrow={pick(hero, "eyebrow", "Ambiance")}
+        title={pick(hero, "title", "Galerie")}
+        intro={pick(
+          hero,
+          "intro",
+          "Photos et vidéos qui donnent envie d'y être — édition après édition.",
+        )}
       />
 
       {photos.length > 0 ? (

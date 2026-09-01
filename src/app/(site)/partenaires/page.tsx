@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getPartners, getKeyStats } from "@/lib/content";
+import { getPageContent, pick } from "@/lib/pageContent";
 import { PartnershipRequestForm } from "@/components/forms/PartnershipRequestForm";
 import { SectionHeading } from "@/components/SectionHeading";
 import { Reveal } from "@/components/motion/Reveal";
@@ -17,14 +18,24 @@ const SUPPORT_NEEDS = [
 ];
 
 export default async function PartenairesPage() {
-  const [partners, stats] = await Promise.all([getPartners(), getKeyStats()]);
+  const [partners, stats, content] = await Promise.all([
+    getPartners(),
+    getKeyStats(),
+    getPageContent("partenaires"),
+  ]);
+  const hero = content.hero;
+  const dossier = content.dossier;
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-20 sm:px-10">
       <SectionHeading
-        eyebrow="Sponsors & partenaires"
-        title="Partenaires"
-        intro="Le Fenou Higbé, c'est une preuve d'impact concrète : des éditions multi-villes, une médiatisation croissante, et une communauté engagée."
+        eyebrow={pick(hero, "eyebrow", "Sponsors & partenaires")}
+        title={pick(hero, "title", "Partenaires")}
+        intro={pick(
+          hero,
+          "intro",
+          "Le Fenou Higbé, c'est une preuve d'impact concrète : des éditions multi-villes, une médiatisation croissante, et une communauté engagée.",
+        )}
       />
 
       {stats.length > 0 && (
@@ -76,12 +87,14 @@ export default async function PartenairesPage() {
 
       <Reveal delay={0.2} className="mt-16 bg-brand-cream p-8">
         <h2 className="text-xl font-bold">
-          Recevoir notre dossier de partenariat
+          {pick(dossier, "title", "Recevoir notre dossier de partenariat")}
         </h2>
         <p className="mt-2 text-sm text-neutral-500">
-          Les grilles de partenariat et tarifs sont réservées aux échanges
-          commerciaux directs — laisse tes coordonnées, on te les envoie par
-          email.
+          {pick(
+            dossier,
+            "note",
+            "Les grilles de partenariat et tarifs sont réservées aux échanges commerciaux directs — laisse tes coordonnées, on te les envoie par email.",
+          )}
         </p>
         <div className="mt-6">
           <PartnershipRequestForm />

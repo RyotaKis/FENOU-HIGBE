@@ -2,22 +2,40 @@ import type { Metadata } from "next";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { SectionHeading } from "@/components/SectionHeading";
 import { Reveal } from "@/components/motion/Reveal";
+import { getPageContent, pick } from "@/lib/pageContent";
 
 export const metadata: Metadata = { title: "Contact" };
 
-const CONTACT_INFO = [
-  { label: "Téléphone", value: "+229 01 9735 1639 · 01 9627 1395" },
-  { label: "Email", value: "packaging.fenou@gmail.com" },
-  { label: "Réseaux", value: "TikTok · Instagram · Facebook — fenouhigbe" },
-];
+export default async function ContactPage() {
+  const content = await getPageContent("contact");
+  const hero = content.hero;
+  const coordonnees = content.coordonnees;
 
-export default function ContactPage() {
+  const CONTACT_INFO = [
+    {
+      label: "Téléphone",
+      value: pick(coordonnees, "telephone", "+229 01 9735 1639 · 01 9627 1395"),
+    },
+    {
+      label: "Email",
+      value: pick(coordonnees, "email", "packaging.fenou@gmail.com"),
+    },
+    {
+      label: "Réseaux",
+      value: pick(
+        coordonnees,
+        "reseaux",
+        "TikTok · Instagram · Facebook — fenouhigbe",
+      ),
+    },
+  ];
+
   return (
     <div className="mx-auto max-w-2xl px-6 py-20 sm:px-10">
       <SectionHeading
-        eyebrow="Une question ?"
-        title="Contact"
-        intro="Écris-nous, on te répond au plus vite."
+        eyebrow={pick(hero, "eyebrow", "Une question ?")}
+        title={pick(hero, "title", "Contact")}
+        intro={pick(hero, "intro", "Écris-nous, on te répond au plus vite.")}
       />
 
       <Reveal delay={0.1} className="mt-10 grid gap-4 sm:grid-cols-3">

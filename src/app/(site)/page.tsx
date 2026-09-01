@@ -1,5 +1,7 @@
+import Image from "next/image";
 import { getNextEdition, getAllEditions } from "@/lib/editions";
 import { getKeyStats } from "@/lib/content";
+import { getPageContent, pick } from "@/lib/pageContent";
 import { ChapterSection } from "@/components/ChapterSection";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaLink } from "@/components/CtaLink";
@@ -65,19 +67,31 @@ const IMPACT_ITEMS = [
 ];
 
 export default async function AccueilPage() {
-  const [nextEdition, editions, stats] = await Promise.all([
+  const [nextEdition, editions, stats, content] = await Promise.all([
     getNextEdition(),
     getAllEditions(),
     getKeyStats(),
+    getPageContent("home"),
   ]);
 
   const displayedStats = stats.length > 0 ? stats : FALLBACK_STATS;
+
+  const hero = content.hero;
+  const manifeste = content.manifeste;
+  const pourquoiProjet = content.pourquoi_projet;
+  const choixFort = content.choix_fort;
+  const impactQuote = content.impact_quote;
+  const impact = content.impact;
+  const programme = content.programme;
+  const fondatrice = content.fondatrice;
+  const tourTeaser = content.tour_teaser;
+  const ctaFinale = content.cta_finale;
 
   return (
     <>
       {/* 1. Hero */}
       <section className="relative flex min-h-dvh flex-col items-start justify-end overflow-hidden px-6 pb-20 pt-32 text-white sm:px-10">
-        <HeroMedia />
+        <HeroMedia overrideImage={hero?.image} />
         <HeroIntro>
           {nextEdition && (
             <HeroIntroItem className="absolute right-6 top-28 hidden sm:right-10 sm:block">
@@ -90,7 +104,11 @@ export default async function AccueilPage() {
           <div className="max-w-2xl">
             <HeroIntroItem>
               <p className="text-xs font-semibold uppercase tracking-caps text-white/60">
-                Marché international des jeunes entrepreneurs — Bénin
+                {pick(
+                  hero,
+                  "eyebrow",
+                  "Marché international des jeunes entrepreneurs — Bénin",
+                )}
               </p>
             </HeroIntroItem>
             <HeroIntroItem>
@@ -102,9 +120,11 @@ export default async function AccueilPage() {
             </HeroIntroItem>
             <HeroIntroItem>
               <p className="mt-7 max-w-xl text-lg text-white/80">
-                Un mouvement vivant. Des villes entières transformées, le
-                temps d&apos;un séjour, en capitale de l&apos;entrepreneuriat
-                africain.
+                {pick(
+                  hero,
+                  "subtitle",
+                  "Un mouvement vivant. Des villes entières transformées, le temps d'un séjour, en capitale de l'entrepreneuriat africain.",
+                )}
               </p>
             </HeroIntroItem>
             <HeroIntroItem className="mt-8 flex flex-wrap gap-4">
@@ -131,11 +151,17 @@ export default async function AccueilPage() {
           Manifeste
         </p>
         <Reveal delay={0.1}>
-          <blockquote className="mx-auto mt-6 max-w-4xl font-display text-3xl leading-tight sm:text-5xl">
-            &laquo; Ce n&apos;est pas un événement. C&apos;est un{" "}
-            <span className="italic text-brand-yellow">mouvement</span>.
-            Chaque ville est une scène. Chaque entrepreneur, un acte. &raquo;
-          </blockquote>
+          {manifeste?.quote ? (
+            <blockquote className="mx-auto mt-6 max-w-4xl font-display text-3xl leading-tight sm:text-5xl">
+              {manifeste.quote}
+            </blockquote>
+          ) : (
+            <blockquote className="mx-auto mt-6 max-w-4xl font-display text-3xl leading-tight sm:text-5xl">
+              &laquo; Ce n&apos;est pas un événement. C&apos;est un{" "}
+              <span className="italic text-brand-yellow">mouvement</span>.
+              Chaque ville est une scène. Chaque entrepreneur, un acte. &raquo;
+            </blockquote>
+          )}
         </Reveal>
       </ChapterSection>
 
@@ -162,25 +188,44 @@ export default async function AccueilPage() {
       <ChapterSection tone="light">
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
           <Reveal>
-            <PlaceholderImage
-              description="Jeune entrepreneure installant son stand au marché"
-              aspectRatio="4/5"
-              className="shadow-warm"
-            />
+            {pourquoiProjet?.image ? (
+              <Image
+                src={pourquoiProjet.image}
+                alt=""
+                width={640}
+                height={800}
+                className="h-auto w-full object-cover shadow-warm"
+                style={{ aspectRatio: "4/5" }}
+              />
+            ) : (
+              <PlaceholderImage
+                description="Jeune entrepreneure installant son stand au marché"
+                aspectRatio="4/5"
+                className="shadow-warm"
+              />
+            )}
           </Reveal>
           <div>
             <SectionHeading
-              eyebrow="Pourquoi ce projet"
-              title="Un espace concret pour exister, vendre, apprendre — et rêver plus grand"
-              intro="Chaque jour au Bénin, des jeunes et des femmes talentueux se battent pour faire connaître leurs produits, vendre, vivre de leur passion. Mais beaucoup manquent de vitrine, de réseau, de soutien."
+              eyebrow={pick(pourquoiProjet, "eyebrow", "Pourquoi ce projet")}
+              title={pick(
+                pourquoiProjet,
+                "title",
+                "Un espace concret pour exister, vendre, apprendre — et rêver plus grand",
+              )}
+              intro={pick(
+                pourquoiProjet,
+                "intro",
+                "Chaque jour au Bénin, des jeunes et des femmes talentueux se battent pour faire connaître leurs produits, vendre, vivre de leur passion. Mais beaucoup manquent de vitrine, de réseau, de soutien.",
+              )}
             />
             <Reveal className="mt-6 max-w-xl" delay={0.1}>
               <p className="text-lg text-neutral-600">
-                C&apos;est de ce constat qu&apos;est né le FENOU HIGBÉ, un
-                marché mensuel, festif et inclusif. Chaque dernier week-end du
-                mois, dans différentes villes du Bénin, des dizaines de jeunes
-                entrepreneurs installent leur savoir-faire, leurs produits,
-                leurs espoirs — et le public répond présent.
+                {pick(
+                  pourquoiProjet,
+                  "body",
+                  "C'est de ce constat qu'est né le FENOU HIGBÉ, un marché mensuel, festif et inclusif. Chaque dernier week-end du mois, dans différentes villes du Bénin, des dizaines de jeunes entrepreneurs installent leur savoir-faire, leurs produits, leurs espoirs — et le public répond présent.",
+                )}
               </p>
             </Reveal>
           </div>
@@ -217,27 +262,45 @@ export default async function AccueilPage() {
         <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
           <div>
             <SectionHeading
-              eyebrow="Un choix fort"
-              title="Le marché le plus accessible du pays"
-              intro="Beaucoup de jeunes n'ont pas encore les moyens d'investir de grosses sommes dans des expositions, mais ils ont des produits de qualité, des idées innovantes et une envie immense de réussir."
+              eyebrow={pick(choixFort, "eyebrow", "Un choix fort")}
+              title={pick(
+                choixFort,
+                "title",
+                "Le marché le plus accessible du pays",
+              )}
+              intro={pick(
+                choixFort,
+                "intro",
+                "Beaucoup de jeunes n'ont pas encore les moyens d'investir de grosses sommes dans des expositions, mais ils ont des produits de qualité, des idées innovantes et une envie immense de réussir.",
+              )}
             />
             <Reveal className="mt-6 max-w-xl" delay={0.1}>
               <p className="text-lg text-neutral-600">
-                Le FENOU HIGBÉ leur ouvre les portes du marché à un coût
-                symbolique, pour leur donner ce premier tremplin vers la
-                réussite. Chaque mois, plus de 30 jeunes entrepreneurs
-                exposent, bénéficient d&apos;un stand professionnel, de
-                visibilité médiatique, et surtout d&apos;un public prêt à
-                consommer local.
+                {pick(
+                  choixFort,
+                  "body",
+                  "Le FENOU HIGBÉ leur ouvre les portes du marché à un coût symbolique, pour leur donner ce premier tremplin vers la réussite. Chaque mois, plus de 30 jeunes entrepreneurs exposent, bénéficient d'un stand professionnel, de visibilité médiatique, et surtout d'un public prêt à consommer local.",
+                )}
               </p>
             </Reveal>
           </div>
           <Reveal delay={0.1}>
-            <PlaceholderImage
-              description="Stand d'exposant coloré, produits artisanaux béninois"
-              aspectRatio="4/5"
-              className="shadow-warm"
-            />
+            {choixFort?.image ? (
+              <Image
+                src={choixFort.image}
+                alt=""
+                width={640}
+                height={800}
+                className="h-auto w-full object-cover shadow-warm"
+                style={{ aspectRatio: "4/5" }}
+              />
+            ) : (
+              <PlaceholderImage
+                description="Stand d'exposant coloré, produits artisanaux béninois"
+                aspectRatio="4/5"
+                className="shadow-warm"
+              />
+            )}
           </Reveal>
         </div>
       </ChapterSection>
@@ -245,16 +308,24 @@ export default async function AccueilPage() {
       {/* 7. Ce que ça change */}
       <ChapterSection tone="gold">
         <blockquote className="mx-auto max-w-3xl text-center font-display text-2xl italic leading-snug sm:text-4xl">
-          &laquo; Ici, les jeunes entrepreneurs béninois ne rêvent pas —{" "}
-          <span className="not-italic">ils vendent</span>. &raquo;
+          {impactQuote?.quote || (
+            <>
+              &laquo; Ici, les jeunes entrepreneurs béninois ne rêvent pas —{" "}
+              <span className="not-italic">ils vendent</span>. &raquo;
+            </>
+          )}
         </blockquote>
       </ChapterSection>
 
       <ChapterSection tone="cream">
         <SectionHeading
-          eyebrow="L'impact"
-          title="Ce que ça change"
-          intro="Des centaines de jeunes trouvent leur premier client, ou leur premier investisseur."
+          eyebrow={pick(impact, "eyebrow", "L'impact")}
+          title={pick(impact, "title", "Ce que ça change")}
+          intro={pick(
+            impact,
+            "intro",
+            "Des centaines de jeunes trouvent leur premier client, ou leur premier investisseur.",
+          )}
         />
         <div className="mt-12 grid gap-10 lg:grid-cols-[1.3fr_1fr]">
           <ul className="columns-1 gap-6 *:mb-6 *:break-inside-avoid sm:columns-2">
@@ -272,11 +343,16 @@ export default async function AccueilPage() {
             className="h-fit border border-neutral-900/10 bg-white p-6 shadow-warm-sm"
           >
             <p className="font-display text-2xl italic text-neutral-800">
-              &laquo; meilleure foire de l&apos;année 🙌 j&apos;ai juré
-              &raquo;
+              «{" "}
+              {pick(
+                impact,
+                "testimonial_quote",
+                "meilleure foire de l'année 🙌 j'ai juré",
+              )}{" "}
+              »
             </p>
             <p className="mt-3 text-sm text-neutral-400">
-              — un visiteur, sur les réseaux sociaux
+              — {pick(impact, "testimonial_author", "un visiteur, sur les réseaux sociaux")}
             </p>
           </Reveal>
         </div>
@@ -285,9 +361,17 @@ export default async function AccueilPage() {
       {/* 8. Programme du Grand Fenou Higbé */}
       <ChapterSection tone="dark">
         <SectionHeading
-          eyebrow="27 octobre – 1er novembre 2026 · Cotonou, Place de l'Amazone"
-          title="Le Grand Fenou Higbé, 4ème édition"
-          intro="Une semaine de programme, du coup d'envoi festif à la grande soirée de clôture."
+          eyebrow={pick(
+            programme,
+            "eyebrow",
+            "27 octobre – 1er novembre 2026 · Cotonou, Place de l'Amazone",
+          )}
+          title={pick(programme, "title", "Le Grand Fenou Higbé, 4ème édition")}
+          intro={pick(
+            programme,
+            "intro",
+            "Une semaine de programme, du coup d'envoi festif à la grande soirée de clôture.",
+          )}
           tone="dark"
         />
         <ProgramGrid />
@@ -295,15 +379,23 @@ export default async function AccueilPage() {
 
       {/* 9. Teaser fondatrice */}
       <ChapterSection tone="light">
-        <FounderTeaser />
+        <FounderTeaser
+          quote={fondatrice?.quote}
+          bio={fondatrice?.bio}
+          image={fondatrice?.image}
+        />
       </ChapterSection>
 
       {/* 10. Teaser Tour 2026 */}
       <ChapterSection tone="cream">
         <SectionHeading
-          eyebrow="Toute l'année"
-          title="Le Tour 2026"
-          intro="Itinérant sur plusieurs villes du Bénin — chaque édition a sa date, sa ville, son ambiance."
+          eyebrow={pick(tourTeaser, "eyebrow", "Toute l'année")}
+          title={pick(tourTeaser, "title", "Le Tour 2026")}
+          intro={pick(
+            tourTeaser,
+            "intro",
+            "Itinérant sur plusieurs villes du Bénin — chaque édition a sa date, sa ville, son ambiance.",
+          )}
         />
         <TourTeaser editions={editions} />
       </ChapterSection>
@@ -311,11 +403,11 @@ export default async function AccueilPage() {
       {/* 11. CTA finale */}
       <ChapterSection tone="gold" className="text-center">
         <p className="text-xs font-semibold uppercase tracking-caps text-neutral-950/60">
-          Rejoignez le mouvement
+          {pick(ctaFinale, "eyebrow", "Rejoignez le mouvement")}
         </p>
         <Reveal delay={0.1}>
           <h2 className="mx-auto mt-4 max-w-3xl font-display text-5xl leading-[0.95] sm:text-7xl">
-            Envie d&apos;en faire partie ?
+            {pick(ctaFinale, "title", "Envie d'en faire partie ?")}
           </h2>
         </Reveal>
         <Reveal className="mt-10 flex flex-wrap justify-center gap-4" delay={0.15}>

@@ -5,6 +5,7 @@ import { logout } from "@/app/admin/actions";
 
 const NAV = [
   { href: "/admin", label: "Vue d'ensemble" },
+  { href: "/admin/contenu", label: "Contenu des pages" },
   { href: "/admin/editions", label: "Éditions du Tour" },
   { href: "/admin/partenaires", label: "Partenaires" },
   { href: "/admin/chiffres", label: "Chiffres clés" },

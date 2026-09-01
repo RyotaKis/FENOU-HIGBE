@@ -3,6 +3,7 @@ import { ExposantForm } from "@/components/forms/ExposantForm";
 import { SectionHeading } from "@/components/SectionHeading";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
+import { getPageContent, pick } from "@/lib/pageContent";
 
 export const metadata: Metadata = { title: "Devenir exposant" };
 
@@ -12,13 +13,21 @@ const BENEFITS = [
   { title: "Communauté", text: "Un réseau de plusieurs centaines de milliers de personnes en ligne." },
 ];
 
-export default function ExposantsPage() {
+export default async function ExposantsPage() {
+  const content = await getPageContent("exposants");
+  const hero = content.hero;
+  const candidature = content.candidature;
+
   return (
     <div className="mx-auto max-w-4xl px-6 py-20 sm:px-10">
       <SectionHeading
-        eyebrow="Candidats exposants"
-        title="Devenir exposant"
-        intro="Le Fenou Higbé recherche des jeunes entrepreneurs africains — artisanat, agroalimentaire, cosmétique, textile, tech — prêts à présenter leur savoir-faire."
+        eyebrow={pick(hero, "eyebrow", "Candidats exposants")}
+        title={pick(hero, "title", "Devenir exposant")}
+        intro={pick(
+          hero,
+          "intro",
+          "Le Fenou Higbé recherche des jeunes entrepreneurs africains — artisanat, agroalimentaire, cosmétique, textile, tech — prêts à présenter leur savoir-faire.",
+        )}
       />
 
       <div className="mt-10 grid gap-6 sm:grid-cols-3">
@@ -37,8 +46,11 @@ export default function ExposantsPage() {
       <Reveal delay={0.2} className="mt-14">
         <h2 className="text-xl font-bold">Candidature</h2>
         <p className="mt-2 text-sm text-neutral-500">
-          Les conditions et modalités (hors tarifs) te seront communiquées
-          après étude de ta candidature.
+          {pick(
+            candidature,
+            "note",
+            "Les conditions et modalités (hors tarifs) te seront communiquées après étude de ta candidature.",
+          )}
         </p>
         <div className="mt-6">
           <ExposantForm />

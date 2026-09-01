@@ -98,6 +98,23 @@ Journal de bord du projet, tenu à jour au fil des sessions. Chaque entrée est 
 
 **En attente :** même liste que précédemment (assets réels, QA humaine, restylage approfondi des pages secondaires). Rien n'est commité.
 
+## 2026-09-02 (suite) — Panel admin : gestion de contenu (texte + images) par page
+
+**Contexte.** Demande client : pouvoir modifier le texte et les images de chaque page du site depuis le panel admin, sans toucher au code — formulaires par section (texte et images ensemble, priorité confirmée par le client).
+
+**Fait :**
+- `supabase/schema.sql` — ajout d'un bucket Storage public `site-content` (upload d'images) avec policies (lecture publique, écriture réservée aux admins authentifiés). **⚠️ Le client doit exécuter ce nouveau bloc SQL dans l'éditeur SQL de son projet Supabase** (la table `page_content` existait déjà dans le schéma initial et fonctionne sans action supplémentaire ; seul le bucket Storage est nouveau et doit être créé manuellement, aucune clé service-role n'étant disponible pour l'exécuter automatiquement).
+- `src/lib/pageContentSchema.ts` — schéma déclaratif des sections éditables pour 7 pages (Accueil, Initiatives, Exposants, Partenaires, Contact, Galerie, Tour 2026), chacune avec ses champs typés (texte / texte long / image).
+- `src/lib/pageContent.ts` — lecture du contenu (`getPageContent`, `pick` avec repli sur le texte par défaut du code), même pattern de dégradation gracieuse que le reste du site.
+- `src/app/admin/actions.ts` — `saveSectionContent` : upsert dans `page_content`, upload d'image vers Supabase Storage si un fichier est fourni (conserve l'URL existante sinon).
+- Panel admin : nouvelle section **« Contenu des pages »** (`/admin/contenu`, liste des pages → `/admin/contenu/[slug]`, un formulaire par section avec aperçu de l'image actuelle).
+- Toutes les pages publiques concernées reconnectées pour lire ce contenu en priorité, avec repli automatique sur le texte/les visuels par défaut si rien n'est encore saisi : hero, manifeste, "pourquoi ce projet", "choix fort", citation impact, bloc impact (+témoignage), programme, teaser fondatrice (+portrait), teaser tour, CTA finale (Accueil) ; intro + bio fondatrice (+portrait) (Initiatives) ; intro + note candidature (Exposants) ; intro + bloc dossier (Partenaires) ; intro + coordonnées (Contact) ; intro (Galerie, Tour 2026).
+- `npm run lint` et `npm run build` propres. Vérifié en dev : home et `/admin/contenu` répondent, redirection login normale sur les routes admin non authentifiées.
+
+**Limite assumée (à faire évoluer si besoin) :** les listes structurées (activités du programme, jalons de la bio, ventures, éléments "ce que ça change"/"qu'est-ce que le Fenou Higbé") restent codées en dur — les rendre éditables demanderait une interface d'ajout/suppression de lignes, hors du périmètre "formulaires par section" retenu pour cette itération.
+
+**En attente :** le client doit exécuter le nouveau bloc SQL Storage dans Supabase avant de pouvoir uploader des images depuis l'admin. Assets réels toujours à fournir. Rien n'est commité.
+
 ## 2026-09-02 — Retrait du curseur personnalisé, animations premium hero→footer
 
 **Contexte.** Le client a jugé le curseur personnalisé (point qui grossit au survol) bizarre — retiré. Demande d'animations premium sur l'ensemble du site, du hero au footer, pas seulement sur les cartes.

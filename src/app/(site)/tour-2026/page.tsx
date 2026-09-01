@@ -3,6 +3,7 @@ import { getAllEditions } from "@/lib/editions";
 import type { Edition, EditionStatus } from "@/lib/types";
 import { SectionHeading } from "@/components/SectionHeading";
 import { Reveal } from "@/components/motion/Reveal";
+import { getPageContent, pick } from "@/lib/pageContent";
 
 export const metadata: Metadata = { title: "Tour 2026" };
 
@@ -129,15 +130,23 @@ const FLAGSHIP_IDS = new Set([
 ]);
 
 export default async function Tour2026Page() {
-  const fetched = await getAllEditions();
+  const [fetched, content] = await Promise.all([
+    getAllEditions(),
+    getPageContent("tour-2026"),
+  ]);
   const editions = fetched.length > 0 ? fetched : FALLBACK_EDITIONS;
+  const hero = content.hero;
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-20 sm:px-10">
       <SectionHeading
-        eyebrow="Itinérant"
-        title="Tour 2026"
-        intro="Le Fenou Higbé voyage à travers le Bénin. Chaque dernier week-end du mois, une nouvelle ville, une nouvelle édition — jusqu'au Grand Fenou Higbé et au Marché de Noël."
+        eyebrow={pick(hero, "eyebrow", "Itinérant")}
+        title={pick(hero, "title", "Tour 2026")}
+        intro={pick(
+          hero,
+          "intro",
+          "Le Fenou Higbé voyage à travers le Bénin. Chaque dernier week-end du mois, une nouvelle ville, une nouvelle édition — jusqu'au Grand Fenou Higbé et au Marché de Noël.",
+        )}
       />
 
       <ol className="relative mt-16 space-y-10 border-l border-neutral-200 pl-8">

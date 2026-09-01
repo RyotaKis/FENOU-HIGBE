@@ -1,12 +1,14 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { PlaceholderImage } from "@/components/PlaceholderImage";
 
-// TODO(assets): replace the carousel slides below with real event photography,
-// then flip `mode` to "video" once the client supplies the final hero video
-// (mp4/webm, muted, loop-ready) and set `videoSrc`.
+// TODO(assets): replace the carousel slides below with real event photography
+// (or set an override image from the admin panel — Contenu des pages → Accueil
+// → Hero), then flip `mode` to "video" once the client supplies the final
+// hero video (mp4/webm, muted, loop-ready) and set `videoSrc`.
 const SLIDES = [
   "Foule et stands illuminés du Grand Fenou Higbé de nuit",
   "Jeune exposante présentant ses produits artisanaux",
@@ -17,22 +19,24 @@ type HeroMediaProps = {
   mode?: "carousel" | "video";
   videoSrc?: string;
   intervalMs?: number;
+  overrideImage?: string;
 };
 
 export function HeroMedia({
   mode = "carousel",
   videoSrc,
   intervalMs = 5000,
+  overrideImage,
 }: HeroMediaProps) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    if (mode !== "carousel") return;
+    if (mode !== "carousel" || overrideImage) return;
     const id = setInterval(() => {
       setIndex((i) => (i + 1) % SLIDES.length);
     }, intervalMs);
     return () => clearInterval(id);
-  }, [mode, intervalMs]);
+  }, [mode, intervalMs, overrideImage]);
 
   return (
     <div className="absolute inset-0 -z-10">
@@ -44,6 +48,14 @@ export function HeroMedia({
           muted
           loop
           playsInline
+        />
+      ) : overrideImage ? (
+        <Image
+          src={overrideImage}
+          alt=""
+          fill
+          priority
+          className="object-cover"
         />
       ) : (
         <AnimatePresence mode="wait">

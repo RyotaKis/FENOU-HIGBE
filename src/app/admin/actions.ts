@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import type { FieldDef } from "@/lib/pageContentSchema";
 
 /** Chaque action vérifie sa propre session — le rendu conditionnel ne suffit pas (cf. Next.js data-security guide). */
 async function requireAdmin() {
@@ -115,4 +116,58 @@ export async function deleteStat(id: string) {
   revalidatePath("/admin/chiffres");
   revalidatePath("/partenaires");
   revalidatePath("/");
+}
+
+/**
+ * Enregistre une section de contenu éditable (texte + éventuelle image
+ * uploadée) pour une page. Les champs image sans nouveau fichier gardent
+ * leur URL actuelle, transmise via un champ caché `${key}_current`.
+ */
+export async function saveSectionContent(
+  pageSlug: string,
+  sectionKey: string,
+  fields: FieldDef[],
+  formData: FormData,
+) {
+  const supabase = await requireAdmin();
+  const contenu: Record<string, string> = {};
+
+  for (const field of fields) {
+    if (field.type === "image") {
+      const file = formData.get(field.key);
+      const current = String(formData.get(`${field.key}_current`) ?? "");
+
+      if (file instanceof File && file.size > 0) {
+        const ext = file.name.split(".").pop() ?? "jpg";
+        const path = `${pageSlug}/${sectionKey}-${field.key}-${Date.now()}.${ext}`;
+        const { error } = await supabase.storage
+          .from("site-content")
+          .upload(path, file, { upsert: true });
+
+        if (!error) {
+          const { data } = supabase.storage.from("site-content").getPublicUrl(path);
+          contenu[field.key] = data.publicUrl;
+        } else if (current) {
+          contenu[field.key] = current;
+        }
+      } else if (current) {
+        contenu[field.key] = current;
+      }
+    } else {
+      contenu[field.key] = String(formData.get(field.key) ?? "").trim();
+    }
+  }
+
+  await supabase.from("page_content").upsert(
+    {
+      page_slug: pageSlug,
+      section_key: sectionKey,
+      contenu,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "page_slug,section_key" },
+  );
+
+  revalidatePath(`/admin/contenu/${pageSlug}`);
+  revalidatePath(pageSlug === "home" ? "/" : `/${pageSlug}`);
 }

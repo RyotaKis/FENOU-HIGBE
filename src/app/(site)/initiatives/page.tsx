@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { SectionHeading } from "@/components/SectionHeading";
 import { PlaceholderImage } from "@/components/PlaceholderImage";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
+import { getPageContent, pick } from "@/lib/pageContent";
 
 export const metadata: Metadata = { title: "Initiatives & Filiales" };
 
@@ -51,13 +53,21 @@ const MILESTONES = [
   },
 ];
 
-export default function InitiativesPage() {
+export default async function InitiativesPage() {
+  const content = await getPageContent("initiatives");
+  const hero = content.hero;
+  const bio = content.bio;
+
   return (
     <div className="mx-auto max-w-5xl px-6 py-20 sm:px-10">
       <SectionHeading
-        eyebrow="L'écosystème Fenou"
-        title="Initiatives & Filiales"
-        intro="Le FENOU HIGBÉ n'est qu'une des initiatives portées par Sonita Tossou, entrepreneure béninoise engagée au service d'une Afrique qui entreprend."
+        eyebrow={pick(hero, "eyebrow", "L'écosystème Fenou")}
+        title={pick(hero, "title", "Initiatives & Filiales")}
+        intro={pick(
+          hero,
+          "intro",
+          "Le FENOU HIGBÉ n'est qu'une des initiatives portées par Sonita Tossou, entrepreneure béninoise engagée au service d'une Afrique qui entreprend.",
+        )}
       />
 
       <div className="mt-14 grid gap-6 sm:grid-cols-3">
@@ -84,16 +94,31 @@ export default function InitiativesPage() {
 
       <div className="mt-24 grid gap-10 sm:grid-cols-[minmax(0,280px)_1fr]">
         <Reveal>
-          <PlaceholderImage
-            description="Portrait de Sonita Tossou en tenue traditionnelle"
-            aspectRatio="3/4"
-          />
+          {bio?.image ? (
+            <Image
+              src={bio.image}
+              alt="Portrait de Sonita Tossou"
+              width={280}
+              height={373}
+              className="h-auto w-full object-cover"
+              style={{ aspectRatio: "3/4" }}
+            />
+          ) : (
+            <PlaceholderImage
+              description="Portrait de Sonita Tossou en tenue traditionnelle"
+              aspectRatio="3/4"
+            />
+          )}
         </Reveal>
         <div>
           <SectionHeading
-            eyebrow="Biographie"
-            title="Sonita Tossou"
-            intro="Une entrepreneure engagée au service de l'Afrique qui entreprend. Née à Cotonou dans un foyer imprégné du commerce, elle a rapidement embrassé l'esprit entrepreneurial qui caractérise sa famille."
+            eyebrow={pick(bio, "eyebrow", "Biographie")}
+            title={pick(bio, "title", "Sonita Tossou")}
+            intro={pick(
+              bio,
+              "intro",
+              "Une entrepreneure engagée au service de l'Afrique qui entreprend. Née à Cotonou dans un foyer imprégné du commerce, elle a rapidement embrassé l'esprit entrepreneurial qui caractérise sa famille.",
+            )}
           />
           <ol className="mt-8 space-y-6 border-l border-neutral-200 pl-6">
             {MILESTONES.map((milestone, index) => (
@@ -109,10 +134,11 @@ export default function InitiativesPage() {
           </ol>
           <Reveal delay={0.2} className="mt-8">
             <p className="text-sm text-neutral-500">
-              Avec plus de 500 000 abonnés, Sonita Tossou est aujourd&apos;hui
-              une voix influente sur l&apos;entrepreneuriat africain, qu&apos;elle
-              partage au fil de ses conseils, ses idées et ses histoires
-              inspirantes.
+              {pick(
+                bio,
+                "footer_text",
+                "Avec plus de 500 000 abonnés, Sonita Tossou est aujourd'hui une voix influente sur l'entrepreneuriat africain, qu'elle partage au fil de ses conseils, ses idées et ses histoires inspirantes.",
+              )}
             </p>
           </Reveal>
         </div>
