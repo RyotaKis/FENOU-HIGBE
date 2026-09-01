@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { ExposantForm } from "@/components/forms/ExposantForm";
+import { SectionHeading } from "@/components/SectionHeading";
+import { Reveal } from "@/components/motion/Reveal";
+import { TiltCard } from "@/components/motion/TiltCard";
 
 export const metadata: Metadata = { title: "Devenir exposant" };
 
@@ -12,26 +15,26 @@ const BENEFITS = [
 export default function ExposantsPage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-20 sm:px-10">
-      <p className="text-sm font-semibold uppercase tracking-widest text-brand-orange">
-        Candidats exposants
-      </p>
-      <h1 className="mt-2 text-4xl font-black">Devenir exposant</h1>
-      <p className="mt-4 max-w-2xl text-neutral-600">
-        Le Fenou Higbé recherche des jeunes entrepreneurs africains —
-        artisanat, agroalimentaire, cosmétique, textile, tech — prêts à
-        présenter leur savoir-faire.
-      </p>
+      <SectionHeading
+        eyebrow="Candidats exposants"
+        title="Devenir exposant"
+        intro="Le Fenou Higbé recherche des jeunes entrepreneurs africains — artisanat, agroalimentaire, cosmétique, textile, tech — prêts à présenter leur savoir-faire."
+      />
 
       <div className="mt-10 grid gap-6 sm:grid-cols-3">
-        {BENEFITS.map((b) => (
-          <div key={b.title} className="rounded-xl border border-neutral-200 p-5">
-            <p className="font-semibold">{b.title}</p>
-            <p className="mt-1 text-sm text-neutral-600">{b.text}</p>
-          </div>
+        {BENEFITS.map((b, index) => (
+          <Reveal key={b.title} delay={index * 0.1}>
+            <TiltCard max={6}>
+              <div className="h-full bg-white p-5 shadow-warm-sm transition-shadow duration-300 hover:shadow-warm">
+                <p className="font-display text-lg font-semibold">{b.title}</p>
+                <p className="mt-1 text-sm text-neutral-600">{b.text}</p>
+              </div>
+            </TiltCard>
+          </Reveal>
         ))}
       </div>
 
-      <div className="mt-14">
+      <Reveal delay={0.2} className="mt-14">
         <h2 className="text-xl font-bold">Candidature</h2>
         <p className="mt-2 text-sm text-neutral-500">
           Les conditions et modalités (hors tarifs) te seront communiquées
@@ -40,7 +43,7 @@ export default function ExposantsPage() {
         <div className="mt-6">
           <ExposantForm />
         </div>
-      </div>
+      </Reveal>
     </div>
   );
 }

@@ -12,6 +12,13 @@ function getTimeLeft(targetIso: string) {
   };
 }
 
+const UNITS: { key: keyof ReturnType<typeof getTimeLeft>; label: string }[] = [
+  { key: "jours", label: "Jours" },
+  { key: "heures", label: "Heures" },
+  { key: "minutes", label: "Min" },
+  { key: "secondes", label: "Sec" },
+];
+
 export function Countdown({
   targetIso,
   ville,
@@ -36,22 +43,28 @@ export function Countdown({
   // Rendu neutre côté serveur / avant hydratation pour éviter tout écart.
   if (!timeLeft) {
     return (
-      <p className="text-sm font-medium text-white/90">
+      <p className="text-xs font-medium uppercase tracking-caps text-white/70">
         Prochaine édition — {ville}
       </p>
     );
   }
 
   return (
-    <div className="flex items-center gap-3 text-white">
-      <span className="text-sm font-medium text-white/90">
+    <div className="flex items-center gap-6">
+      <span className="hidden text-xs font-medium uppercase tracking-caps text-white/60 sm:inline">
         Prochaine édition — {ville}
       </span>
-      <div className="flex items-center gap-2 font-mono text-sm" aria-live="polite">
-        <span>{timeLeft.jours}j</span>
-        <span>{String(timeLeft.heures).padStart(2, "0")}h</span>
-        <span>{String(timeLeft.minutes).padStart(2, "0")}m</span>
-        <span>{String(timeLeft.secondes).padStart(2, "0")}s</span>
+      <div className="flex items-center gap-4" aria-live="polite">
+        {UNITS.map((unit) => (
+          <div key={unit.key} className="text-center">
+            <span className="tabular-nums font-display text-lg font-semibold text-brand-yellow">
+              {String(timeLeft[unit.key]).padStart(2, "0")}
+            </span>
+            <span className="ml-1 text-[10px] uppercase tracking-caps text-white/50">
+              {unit.label}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );

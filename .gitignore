@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# extraction temporaire de documents source (PDF client, captures) — pas des assets du site
+/.scratch_extract/

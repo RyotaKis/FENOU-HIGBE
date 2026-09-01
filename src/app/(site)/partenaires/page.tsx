@@ -2,39 +2,46 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getPartners, getKeyStats } from "@/lib/content";
 import { PartnershipRequestForm } from "@/components/forms/PartnershipRequestForm";
+import { SectionHeading } from "@/components/SectionHeading";
+import { Reveal } from "@/components/motion/Reveal";
+import { StatCounter } from "@/components/motion/StatCounter";
 
 export const metadata: Metadata = { title: "Partenaires" };
+
+const SUPPORT_NEEDS = [
+  "Garantir l'accessibilité du marché aux jeunes entrepreneurs",
+  "Appuyer la logistique (tentes, signalétique, mobilier)",
+  "Offrir des bourses mensuelles aux meilleurs entrepreneurs",
+  "Renforcer le programme de formation et de coaching",
+  "Étendre le modèle à d'autres villes : Porto-Novo, Natitingou, Ouidah, Lokossa...",
+];
 
 export default async function PartenairesPage() {
   const [partners, stats] = await Promise.all([getPartners(), getKeyStats()]);
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-20 sm:px-10">
-      <p className="text-sm font-semibold uppercase tracking-widest text-brand-orange">
-        Sponsors &amp; partenaires
-      </p>
-      <h1 className="mt-2 text-4xl font-black">Partenaires</h1>
-      <p className="mt-4 max-w-2xl text-neutral-600">
-        Le Fenou Higbé, c&apos;est une preuve d&apos;impact concrète : des
-        éditions multi-villes, une médiatisation croissante, et une
-        communauté engagée.
-      </p>
+      <SectionHeading
+        eyebrow="Sponsors & partenaires"
+        title="Partenaires"
+        intro="Le Fenou Higbé, c'est une preuve d'impact concrète : des éditions multi-villes, une médiatisation croissante, et une communauté engagée."
+      />
 
       {stats.length > 0 && (
         <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
           {stats.map((stat) => (
-            <div key={stat.id} className="text-center">
-              <p className="text-3xl font-black text-brand-green">
-                {stat.valeur}
-              </p>
-              <p className="mt-1 text-sm text-neutral-600">{stat.label}</p>
-            </div>
+            <StatCounter
+              key={stat.id}
+              value={stat.valeur}
+              label={stat.label}
+              className="text-center"
+            />
           ))}
         </div>
       )}
 
       {partners.length > 0 && (
-        <div className="mt-14">
+        <Reveal delay={0.1} className="mt-14">
           <h2 className="text-sm font-semibold uppercase tracking-widest text-neutral-500">
             Ils nous font confiance
           </h2>
@@ -50,10 +57,24 @@ export default async function PartenairesPage() {
               />
             ))}
           </div>
-        </div>
+        </Reveal>
       )}
 
-      <div className="mt-16 rounded-2xl bg-neutral-50 p-8">
+      <Reveal delay={0.15} className="mt-16">
+        <h2 className="text-xl font-bold">Ce que nous recherchons</h2>
+        <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+          {SUPPORT_NEEDS.map((need) => (
+            <li
+              key={need}
+              className="bg-white p-4 text-neutral-600 shadow-warm-sm transition-shadow duration-300 hover:shadow-warm"
+            >
+              {need}
+            </li>
+          ))}
+        </ul>
+      </Reveal>
+
+      <Reveal delay={0.2} className="mt-16 bg-brand-cream p-8">
         <h2 className="text-xl font-bold">
           Recevoir notre dossier de partenariat
         </h2>
@@ -65,7 +86,7 @@ export default async function PartenairesPage() {
         <div className="mt-6">
           <PartnershipRequestForm />
         </div>
-      </div>
+      </Reveal>
     </div>
   );
 }
