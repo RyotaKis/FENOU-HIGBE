@@ -7,6 +7,7 @@ const NAV = [
   { href: "/admin", label: "Vue d'ensemble" },
   { href: "/admin/contenu", label: "Contenu des pages" },
   { href: "/admin/editions", label: "Éditions du Tour" },
+  { href: "/admin/galerie", label: "Galerie" },
   { href: "/admin/partenaires", label: "Partenaires" },
   { href: "/admin/chiffres", label: "Chiffres clés" },
   { href: "/admin/candidatures", label: "Candidatures exposants" },

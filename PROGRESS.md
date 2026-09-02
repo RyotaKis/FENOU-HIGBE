@@ -128,6 +128,24 @@ Journal de bord du projet, tenu à jour au fil des sessions. Chaque entrée est 
 
 **En attente :** le bloc SQL Storage à exécuter côté client, assets réels à fournir. Rien n'est commité.
 
+## 2026-09-02 (suite 3) — Confirmation SQL Storage + upload en masse pour la galerie
+
+**Contexte.** Le client confirme avoir exécuté le bloc SQL Storage — vérifié via sondes REST directes (bucket `site-content` accessible, policy RLS bloque bien un upload anonyme, `page_content` répond) : tout est en place côté Supabase.
+
+Le client a ensuite signalé un crash `Jest worker encountered N child process exceptions` sur `/admin/contenu/exposants` — cache `.next` corrompu par le hot-reload répété, purgé et serveur redémarré proprement ; en attente de confirmation que ça règle le souci (sinon récupérer la vraie trace dans le terminal `npm run dev`, pas seulement l'overlay navigateur).
+
+Le client a ensuite demandé comment ajouter les images, notamment ~5 Go de photos brutes pour la galerie. Point clé communiqué : **jamais dans le workspace/repo Git** (le site sert les images depuis Supabase Storage, pas depuis le code). Aucune interface d'upload en masse n'existait pour la galerie (seul `edition_photos` existait en base, sans écran admin) — construite dans cette session avec compression automatique côté navigateur (choix confirmé par le client).
+
+**Fait :**
+- `src/lib/compressImage.ts` — redimensionne (max 2000px) et recompresse en JPEG (qualité 0.8) côté navigateur via Canvas, avant tout envoi.
+- `src/components/admin/GalleryUploader.tsx` — sélection d'une édition + plusieurs fichiers, upload direct navigateur → Supabase Storage (bucket `site-content`, chemin `galerie/<edition_id>/...`) puis insertion dans `edition_photos`, avec statut par fichier (compression/envoi/ok/erreur) ; upload direct depuis le client plutôt que via Server Action pour éviter la limite de taille de payload des Server Actions Next.js.
+- `src/app/admin/(dashboard)/galerie/page.tsx` — nouvelle page admin : uploader + grille des photos existantes (ville d'édition, suppression au survol).
+- `deleteEditionPhoto` ajouté à `src/app/admin/actions.ts`.
+- Lien « Galerie » ajouté à la nav admin.
+- `npm run lint` et `npm run build` propres.
+
+**En attente :** confirmation que le crash Turbopack ne revient pas (sinon fournir la trace terminal complète). Assets réels toujours à fournir — le client peut maintenant les uploader lui-même via `/admin/galerie` une fois ses photos triées/exportées hors du repo. Rien n'est commité.
+
 ## 2026-09-02 — Retrait du curseur personnalisé, animations premium hero→footer
 
 **Contexte.** Le client a jugé le curseur personnalisé (point qui grossit au survol) bizarre — retiré. Demande d'animations premium sur l'ensemble du site, du hero au footer, pas seulement sur les cartes.

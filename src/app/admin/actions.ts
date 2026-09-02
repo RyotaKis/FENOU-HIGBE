@@ -227,6 +227,13 @@ export async function addListItem(
   await saveListItems(supabase, pageSlug, sectionKey, items);
 }
 
+export async function deleteEditionPhoto(id: string) {
+  const supabase = await requireAdmin();
+  await supabase.from("edition_photos").delete().eq("id", id);
+  revalidatePath("/admin/galerie");
+  revalidatePath("/galerie");
+}
+
 /** Supprime l'élément à l'index donné d'une section de type "list". */
 export async function deleteListItem(
   pageSlug: string,
