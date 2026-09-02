@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getPartners, getKeyStats } from "@/lib/content";
-import { getPageContent, pick } from "@/lib/pageContent";
+import { getPageContent, pick, pickList } from "@/lib/pageContent";
 import { PartnershipRequestForm } from "@/components/forms/PartnershipRequestForm";
 import { SectionHeading } from "@/components/SectionHeading";
 import { Reveal } from "@/components/motion/Reveal";
@@ -9,12 +9,12 @@ import { StatCounter } from "@/components/motion/StatCounter";
 
 export const metadata: Metadata = { title: "Partenaires" };
 
-const SUPPORT_NEEDS = [
-  "Garantir l'accessibilité du marché aux jeunes entrepreneurs",
-  "Appuyer la logistique (tentes, signalétique, mobilier)",
-  "Offrir des bourses mensuelles aux meilleurs entrepreneurs",
-  "Renforcer le programme de formation et de coaching",
-  "Étendre le modèle à d'autres villes : Porto-Novo, Natitingou, Ouidah, Lokossa...",
+const DEFAULT_SUPPORT_NEEDS = [
+  { text: "Garantir l'accessibilité du marché aux jeunes entrepreneurs" },
+  { text: "Appuyer la logistique (tentes, signalétique, mobilier)" },
+  { text: "Offrir des bourses mensuelles aux meilleurs entrepreneurs" },
+  { text: "Renforcer le programme de formation et de coaching" },
+  { text: "Étendre le modèle à d'autres villes : Porto-Novo, Natitingou, Ouidah, Lokossa..." },
 ];
 
 export default async function PartenairesPage() {
@@ -25,6 +25,7 @@ export default async function PartenairesPage() {
   ]);
   const hero = content.hero;
   const dossier = content.dossier;
+  const supportNeeds = pickList(content, "support_needs", DEFAULT_SUPPORT_NEEDS);
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-20 sm:px-10">
@@ -74,12 +75,12 @@ export default async function PartenairesPage() {
       <Reveal delay={0.15} className="mt-16">
         <h2 className="text-xl font-bold">Ce que nous recherchons</h2>
         <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-          {SUPPORT_NEEDS.map((need) => (
+          {supportNeeds.map((need, index) => (
             <li
-              key={need}
+              key={`${need.text}-${index}`}
               className="bg-white p-4 text-neutral-600 shadow-warm-sm transition-shadow duration-300 hover:shadow-warm"
             >
-              {need}
+              {need.text}
             </li>
           ))}
         </ul>

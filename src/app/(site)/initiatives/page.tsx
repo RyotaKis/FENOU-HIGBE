@@ -4,11 +4,11 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { PlaceholderImage } from "@/components/PlaceholderImage";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
-import { getPageContent, pick } from "@/lib/pageContent";
+import { getPageContent, pick, pickList } from "@/lib/pageContent";
 
 export const metadata: Metadata = { title: "Initiatives & Filiales" };
 
-const VENTURES = [
+const DEFAULT_VENTURES = [
   {
     name: "Fenou Foods",
     year: "2016",
@@ -29,7 +29,7 @@ const VENTURES = [
   },
 ];
 
-const MILESTONES = [
+const DEFAULT_MILESTONES = [
   { year: "2016", text: "Diplômée en pharmacologie, fonde Fenou Foods à Cotonou." },
   {
     year: "2018",
@@ -57,6 +57,8 @@ export default async function InitiativesPage() {
   const content = await getPageContent("initiatives");
   const hero = content.hero;
   const bio = content.bio;
+  const ventures = pickList(content, "ventures", DEFAULT_VENTURES);
+  const milestones = pickList(content, "milestones", DEFAULT_MILESTONES);
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-20 sm:px-10">
@@ -71,8 +73,8 @@ export default async function InitiativesPage() {
       />
 
       <div className="mt-14 grid gap-6 sm:grid-cols-3">
-        {VENTURES.map((venture, index) => (
-          <Reveal key={venture.name} delay={index * 0.1}>
+        {ventures.map((venture, index) => (
+          <Reveal key={`${venture.name}-${index}`} delay={index * 0.1}>
             <TiltCard max={6}>
               <div className="h-full bg-white p-6 shadow-warm-sm transition-shadow duration-300 hover:shadow-warm">
                 <h3 className="font-display text-xl font-semibold">
@@ -121,7 +123,7 @@ export default async function InitiativesPage() {
             )}
           />
           <ol className="mt-8 space-y-6 border-l border-neutral-200 pl-6">
-            {MILESTONES.map((milestone, index) => (
+            {milestones.map((milestone, index) => (
               <Reveal key={`${milestone.year}-${index}`} delay={index * 0.08}>
                 <li>
                   <p className="text-sm font-semibold text-brand-orange">

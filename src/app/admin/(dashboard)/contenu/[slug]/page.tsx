@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getPageDef } from "@/lib/pageContentSchema";
-import { getPageContent } from "@/lib/pageContent";
-import { saveSectionContent } from "@/app/admin/actions";
+import { getPageContent, pickList } from "@/lib/pageContent";
+import { saveSectionContent, addListItem, deleteListItem } from "@/app/admin/actions";
 
 export default async function AdminContenuPageSlug({
   params,
@@ -28,6 +28,96 @@ export default async function AdminContenuPageSlug({
 
       <div className="mt-6 flex flex-col gap-6">
         {pageDef.sections.map((section) => {
+          if (section.kind === "list") {
+            const items = pickList(content, section.key, []);
+            const addAction = addListItem.bind(
+              null,
+              pageDef.slug,
+              section.key,
+              section.itemFields,
+            );
+
+            return (
+              <div key={section.key} className="rounded-xl bg-white p-6 shadow-sm">
+                <p className="font-semibold">{section.label}</p>
+                <p className="mt-1 text-xs text-neutral-400">
+                  Tant que cette liste est vide, le site affiche son contenu
+                  par défaut. Dès qu&apos;un élément est ajouté ici, il
+                  remplace entièrement la liste par défaut.
+                </p>
+
+                {items.length > 0 && (
+                  <ul className="mt-4 divide-y divide-neutral-200">
+                    {items.map((item, index) => (
+                      <li
+                        key={index}
+                        className="flex items-start justify-between gap-4 py-3"
+                      >
+                        <div className="text-sm">
+                          {section.itemFields.map((f) => (
+                            <p key={f.key}>
+                              <span className="text-neutral-400">
+                                {f.label} :{" "}
+                              </span>
+                              {item[f.key]}
+                            </p>
+                          ))}
+                        </div>
+                        <form
+                          action={deleteListItem.bind(
+                            null,
+                            pageDef.slug,
+                            section.key,
+                            index,
+                          )}
+                        >
+                          <button
+                            type="submit"
+                            className="shrink-0 text-sm text-red-600"
+                          >
+                            Supprimer
+                          </button>
+                        </form>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <form
+                  action={addAction}
+                  className="mt-4 grid gap-3 border-t border-neutral-100 pt-4 sm:grid-cols-2"
+                >
+                  {section.itemFields.map((field) => (
+                    <div
+                      key={field.key}
+                      className={field.type === "textarea" ? "sm:col-span-2" : ""}
+                    >
+                      <label className="text-sm font-medium">{field.label}</label>
+                      {field.type === "textarea" ? (
+                        <textarea
+                          name={field.key}
+                          rows={2}
+                          className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+                        />
+                      ) : (
+                        <input
+                          name={field.key}
+                          className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+                        />
+                      )}
+                    </div>
+                  ))}
+                  <button
+                    type="submit"
+                    className="sm:col-span-2 w-fit rounded-full bg-brand-green px-6 py-2 text-sm font-semibold text-white"
+                  >
+                    Ajouter « {section.itemLabel} »
+                  </button>
+                </form>
+              </div>
+            );
+          }
+
           const current = content[section.key] ?? {};
           const action = saveSectionContent.bind(
             null,

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getNextEdition, getAllEditions } from "@/lib/editions";
 import { getKeyStats } from "@/lib/content";
-import { getPageContent, pick } from "@/lib/pageContent";
+import { getPageContent, pick, pickList } from "@/lib/pageContent";
 import { ChapterSection } from "@/components/ChapterSection";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaLink } from "@/components/CtaLink";
@@ -10,7 +10,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { StatCounter } from "@/components/motion/StatCounter";
 import { HeroMedia } from "@/components/home/HeroMedia";
 import { HeroIntro, HeroIntroItem } from "@/components/home/HeroIntro";
-import { ProgramGrid } from "@/components/home/ProgramGrid";
+import { ProgramGrid, DEFAULT_ACTIVITIES } from "@/components/home/ProgramGrid";
 import { TourTeaser } from "@/components/home/TourTeaser";
 import { FounderTeaser } from "@/components/home/FounderTeaser";
 
@@ -24,46 +24,40 @@ const FALLBACK_STATS = [
   { id: "villes", label: "villes parcourues", valeur: "4" },
 ];
 
-const WHAT_YOU_FIND = [
+const DEFAULT_CONCEPT_ITEMS = [
   {
-    n: "01",
     title: "20 à 30 exposants",
     text: "Art, agroalimentaire, cosmétique, textile, artisanat, tech...",
   },
   {
-    n: "02",
     title: "Ateliers pratiques",
     text: "Marketing digital, gestion financière, image de marque.",
   },
   {
-    n: "03",
     title: "Pitchs & réseau",
     text: "Mises en réseau avec partenaires publics et privés.",
   },
   {
-    n: "04",
     title: "Podium culturel",
     text: "Musique live, humour, artistes locaux.",
   },
   {
-    n: "05",
     title: "Femmes entrepreneures",
     text: "Une valorisation concrète, chaque mois.",
   },
   {
-    n: "06",
     title: "Diffusion live",
     text: "Sur les réseaux sociaux, +500 000 abonnés cumulés.",
   },
 ];
 
-const IMPACT_ITEMS = [
-  "Une opportunité réelle pour des jeunes souvent exclus des salons classiques",
-  "Des centaines de produits locaux valorisés chaque mois",
-  "Un encouragement concret à l'autonomisation des femmes",
-  "Une communauté entrepreneuriale qui se construit et se soutient",
-  "Une dynamique économique de proximité, accessible et durable",
-  "Une jeunesse outillée et confiante",
+const DEFAULT_IMPACT_ITEMS = [
+  { text: "Une opportunité réelle pour des jeunes souvent exclus des salons classiques" },
+  { text: "Des centaines de produits locaux valorisés chaque mois" },
+  { text: "Un encouragement concret à l'autonomisation des femmes" },
+  { text: "Une communauté entrepreneuriale qui se construit et se soutient" },
+  { text: "Une dynamique économique de proximité, accessible et durable" },
+  { text: "Une jeunesse outillée et confiante" },
 ];
 
 export default async function AccueilPage() {
@@ -86,6 +80,10 @@ export default async function AccueilPage() {
   const fondatrice = content.fondatrice;
   const tourTeaser = content.tour_teaser;
   const ctaFinale = content.cta_finale;
+
+  const conceptItems = pickList(content, "concept_items", DEFAULT_CONCEPT_ITEMS);
+  const impactItems = pickList(content, "impact_items", DEFAULT_IMPACT_ITEMS);
+  const activities = pickList(content, "programme_items", DEFAULT_ACTIVITIES);
 
   return (
     <>
@@ -241,11 +239,11 @@ export default async function AccueilPage() {
           tone="dark"
         />
         <div className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2">
-          {WHAT_YOU_FIND.map((item, index) => (
-            <Reveal key={item.n} delay={index * 0.06}>
+          {conceptItems.map((item, index) => (
+            <Reveal key={`${item.title}-${index}`} delay={index * 0.06}>
               <div className="flex gap-4">
                 <span className="font-display text-2xl italic text-brand-yellow/70">
-                  {item.n}
+                  {String(index + 1).padStart(2, "0")}
                 </span>
                 <div>
                   <p className="font-semibold text-white">{item.title}</p>
@@ -329,11 +327,11 @@ export default async function AccueilPage() {
         />
         <div className="mt-12 grid gap-10 lg:grid-cols-[1.3fr_1fr]">
           <ul className="columns-1 gap-6 *:mb-6 *:break-inside-avoid sm:columns-2">
-            {IMPACT_ITEMS.map((item, index) => (
-              <Reveal key={item} delay={index * 0.06}>
+            {impactItems.map((item, index) => (
+              <Reveal key={`${item.text}-${index}`} delay={index * 0.06}>
                 <li className="flex gap-3 text-neutral-700">
                   <span className="mt-1 text-brand-green">✓</span>
-                  <span>{item}</span>
+                  <span>{item.text}</span>
                 </li>
               </Reveal>
             ))}
@@ -374,7 +372,7 @@ export default async function AccueilPage() {
           )}
           tone="dark"
         />
-        <ProgramGrid />
+        <ProgramGrid activities={activities} />
       </ChapterSection>
 
       {/* 9. Teaser fondatrice */}

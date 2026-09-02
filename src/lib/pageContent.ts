@@ -1,12 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 
 export type SectionContent = Record<string, string>;
+export type ListItem = Record<string, string>;
 export type PageContentMap = Record<string, SectionContent>;
 
 /**
  * Contenu éditable (texte/images) saisi depuis l'admin pour une page,
  * indexé par section_key. Retourne {} en l'absence de Supabase ou de
  * lignes — les pages appelantes gardent alors leur contenu par défaut.
+ * Les sections "list" stockent leurs éléments sous `contenu.items`.
  */
 export async function getPageContent(pageSlug: string): Promise<PageContentMap> {
   try {
@@ -34,4 +36,17 @@ export function pick(
 ): string {
   const value = section?.[key];
   return value && value.trim().length > 0 ? value : fallback;
+}
+
+/**
+ * Éléments d'une section de type "list" (contenu.items). Retourne
+ * `fallback` tant que rien n'a été ajouté depuis l'admin.
+ */
+export function pickList<T extends ListItem>(
+  content: PageContentMap,
+  sectionKey: string,
+  fallback: T[],
+): T[] {
+  const raw = content[sectionKey] as unknown as { items?: T[] } | undefined;
+  return raw?.items && raw.items.length > 0 ? raw.items : fallback;
 }

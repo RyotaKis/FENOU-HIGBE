@@ -171,3 +171,70 @@ export async function saveSectionContent(
   revalidatePath(`/admin/contenu/${pageSlug}`);
   revalidatePath(pageSlug === "home" ? "/" : `/${pageSlug}`);
 }
+
+async function getListItems(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  pageSlug: string,
+  sectionKey: string,
+): Promise<Record<string, string>[]> {
+  const { data } = await supabase
+    .from("page_content")
+    .select("contenu")
+    .eq("page_slug", pageSlug)
+    .eq("section_key", sectionKey)
+    .maybeSingle();
+
+  const items = (data?.contenu as { items?: Record<string, string>[] } | null)?.items;
+  return items ?? [];
+}
+
+async function saveListItems(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  pageSlug: string,
+  sectionKey: string,
+  items: Record<string, string>[],
+) {
+  await supabase.from("page_content").upsert(
+    {
+      page_slug: pageSlug,
+      section_key: sectionKey,
+      contenu: { items },
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "page_slug,section_key" },
+  );
+
+  revalidatePath(`/admin/contenu/${pageSlug}`);
+  revalidatePath(pageSlug === "home" ? "/" : `/${pageSlug}`);
+}
+
+/** Ajoute un élément à une section de type "list" (cf. pageContentSchema.ts). */
+export async function addListItem(
+  pageSlug: string,
+  sectionKey: string,
+  itemFields: FieldDef[],
+  formData: FormData,
+) {
+  const supabase = await requireAdmin();
+  const item: Record<string, string> = {};
+  for (const field of itemFields) {
+    item[field.key] = String(formData.get(field.key) ?? "").trim();
+  }
+  if (Object.values(item).every((v) => !v)) return;
+
+  const items = await getListItems(supabase, pageSlug, sectionKey);
+  items.push(item);
+  await saveListItems(supabase, pageSlug, sectionKey, items);
+}
+
+/** Supprime l'élément à l'index donné d'une section de type "list". */
+export async function deleteListItem(
+  pageSlug: string,
+  sectionKey: string,
+  index: number,
+) {
+  const supabase = await requireAdmin();
+  const items = await getListItems(supabase, pageSlug, sectionKey);
+  items.splice(index, 1);
+  await saveListItems(supabase, pageSlug, sectionKey, items);
+}

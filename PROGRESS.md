@@ -111,9 +111,22 @@ Journal de bord du projet, tenu à jour au fil des sessions. Chaque entrée est 
 - Toutes les pages publiques concernées reconnectées pour lire ce contenu en priorité, avec repli automatique sur le texte/les visuels par défaut si rien n'est encore saisi : hero, manifeste, "pourquoi ce projet", "choix fort", citation impact, bloc impact (+témoignage), programme, teaser fondatrice (+portrait), teaser tour, CTA finale (Accueil) ; intro + bio fondatrice (+portrait) (Initiatives) ; intro + note candidature (Exposants) ; intro + bloc dossier (Partenaires) ; intro + coordonnées (Contact) ; intro (Galerie, Tour 2026).
 - `npm run lint` et `npm run build` propres. Vérifié en dev : home et `/admin/contenu` répondent, redirection login normale sur les routes admin non authentifiées.
 
-**Limite assumée (à faire évoluer si besoin) :** les listes structurées (activités du programme, jalons de la bio, ventures, éléments "ce que ça change"/"qu'est-ce que le Fenou Higbé") restent codées en dur — les rendre éditables demanderait une interface d'ajout/suppression de lignes, hors du périmètre "formulaires par section" retenu pour cette itération.
+**En attente :** le client doit exécuter le nouveau bloc SQL Storage dans Supabase avant de pouvoir uploader des images depuis l'admin. Assets réels toujours à fournir.
 
-**En attente :** le client doit exécuter le nouveau bloc SQL Storage dans Supabase avant de pouvoir uploader des images depuis l'admin. Assets réels toujours à fournir. Rien n'est commité.
+## 2026-09-02 (suite 2) — Extension du CMS aux listes structurées
+
+**Contexte.** Suite de la demande précédente : rendre éditables les listes qui étaient restées codées en dur (programme, jalons bio, filiales, etc.).
+
+**Fait :**
+- `src/lib/pageContentSchema.ts` — `SectionDef` devient une union discriminée `kind: "single" | "list"` ; ajout de 6 sections de type liste : `concept_items` et `impact_items` et `programme_items` (Accueil), `ventures` et `milestones` (Initiatives), `benefits` (Exposants), `support_needs` (Partenaires). Chaque section liste déclare `itemFields` (la forme d'un élément) et `itemLabel`.
+- `src/lib/pageContent.ts` — nouveau helper `pickList(content, sectionKey, fallback)` : lit `contenu.items`, retourne le tableau par défaut du code tant que la liste admin est vide.
+- `src/app/admin/actions.ts` — `addListItem` / `deleteListItem` (upsert/retrait dans `contenu.items` du `page_content`), même pattern « formulaire d'ajout + liste avec bouton Supprimer » que les éditions/partenaires déjà existants dans l'admin.
+- `/admin/contenu/[slug]` — les sections de type liste s'affichent différemment des sections simples : éléments existants (avec suppression) + formulaire d'ajout d'un nouvel élément.
+- `ProgramGrid` accepte maintenant une prop `activities` (repli sur `DEFAULT_ACTIVITIES`) ; la mise en page bento (grande tuile / spans) est recalculée par position plutôt que stockée par élément, pour que des activités ajoutées depuis l'admin s'insèrent proprement dans la grille.
+- Home, Initiatives, Exposants, Partenaires reconnectés : chaque liste lit `pickList(...)` avec repli sur son tableau par défaut existant.
+- `npm run lint` et `npm run build` propres. Vérifié en dev : `/`, `/initiatives`, `/exposants`, `/partenaires` répondent tous 200.
+
+**En attente :** le bloc SQL Storage à exécuter côté client, assets réels à fournir. Rien n'est commité.
 
 ## 2026-09-02 — Retrait du curseur personnalisé, animations premium hero→footer
 
