@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
 
@@ -88,7 +89,7 @@ export function ProgramGrid({
                   big ? "flex min-h-64 flex-col justify-end" : ""
                 }`}
               >
-                {!big && (
+                {!big && activity.title !== "Fenou Xwé" && (
                   <svg
                     viewBox="0 0 24 24"
                     className="h-6 w-6 text-brand-yellow"
@@ -99,11 +100,21 @@ export function ProgramGrid({
                     {ICONS[index % ICONS.length]}
                   </svg>
                 )}
-                <h3
-                  className={`font-display font-semibold text-white ${big ? "mt-0 text-3xl" : "mt-4 text-xl"}`}
-                >
-                  {activity.title}
-                </h3>
+                {activity.title === "Fenou Xwé" ? (
+                  <Image
+                    src="/logo/fenou-xwe-white.png"
+                    alt="Fenou Xwé"
+                    width={1707}
+                    height={1116}
+                    className={`w-auto ${big ? "h-14" : "mt-4 h-10"}`}
+                  />
+                ) : (
+                  <h3
+                    className={`font-display font-semibold text-white ${big ? "mt-0 text-3xl" : "mt-4 text-xl"}`}
+                  >
+                    {activity.title}
+                  </h3>
+                )}
                 <p
                   className={`mt-3 text-white/75 transition-colors group-hover:text-white/90 ${big ? "max-w-md text-base" : "text-sm"}`}
                 >

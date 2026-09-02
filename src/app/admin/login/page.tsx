@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useActionState } from "react";
 import { login } from "@/app/admin/actions";
 
@@ -12,10 +13,14 @@ export default function AdminLoginPage() {
         action={formAction}
         className="w-full max-w-sm rounded-2xl bg-white p-8"
       >
-        <h1 className="text-xl font-black">
-          FENOU <span className="text-brand-orange">HIGBÉ</span>
-        </h1>
-        <p className="mt-1 text-sm text-neutral-500">Panel d&apos;administration</p>
+        <Image
+          src="/logo/fenou-higbe-dark.png"
+          alt="Fenou Higbé"
+          width={608}
+          height={306}
+          className="h-9 w-auto"
+        />
+        <p className="mt-2 text-sm text-neutral-500">Panel d&apos;administration</p>
 
         <div className="mt-6 space-y-4">
           <div>

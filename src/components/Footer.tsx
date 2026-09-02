@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import { Reveal } from "@/components/motion/Reveal";
@@ -23,19 +24,13 @@ export function Footer() {
     <footer className="grain relative mt-auto overflow-hidden border-t border-white/10 bg-ink px-4 py-16 text-neutral-300">
       <Reveal className="relative mx-auto grid max-w-6xl gap-12 sm:grid-cols-3" y={16}>
         <div>
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-brand-yellow font-display text-sm font-bold text-neutral-950">
-              FH
-            </span>
-            <span className="leading-tight">
-              <span className="block font-display text-lg font-semibold text-white">
-                Fenou Higbé
-              </span>
-              <span className="block text-[10px] uppercase tracking-caps text-neutral-500">
-                Tour 2026
-              </span>
-            </span>
-          </div>
+          <Image
+            src="/logo/fenou-higbe-white.png"
+            alt="Fenou Higbé"
+            width={608}
+            height={306}
+            className="h-10 w-auto"
+          />
           <p className="mt-4 max-w-sm text-sm text-neutral-400">
             Le marché qui fait bouger le Bénin, ville après ville. Bientôt sur
             www.fenouhigbe.com.

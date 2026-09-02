@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { getNextEdition } from "@/lib/editions";
 import { Countdown } from "@/components/Countdown";
@@ -32,18 +33,15 @@ export async function Header() {
       )}
       <div className="border-b border-black/5 bg-background/90 backdrop-blur-md">
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-ink font-display text-sm font-bold text-brand-yellow">
-              FH
-            </span>
-            <span className="leading-tight">
-              <span className="block font-display text-lg font-semibold tracking-tight">
-                Fenou Higbé
-              </span>
-              <span className="block text-[10px] uppercase tracking-caps text-neutral-500">
-                Tour 2026
-              </span>
-            </span>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logo/fenou-higbe-dark.png"
+              alt="Fenou Higbé"
+              width={608}
+              height={306}
+              priority
+              className="h-9 w-auto"
+            />
           </Link>
           <ul className="hidden items-center gap-7 text-xs font-medium uppercase tracking-caps md:flex">
             {NAV_LINKS.map((link) => (

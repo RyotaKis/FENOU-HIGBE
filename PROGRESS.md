@@ -144,7 +144,19 @@ Le client a ensuite demandé comment ajouter les images, notamment ~5 Go de phot
 - Lien « Galerie » ajouté à la nav admin.
 - `npm run lint` et `npm run build` propres.
 
-**En attente :** confirmation que le crash Turbopack ne revient pas (sinon fournir la trace terminal complète). Assets réels toujours à fournir — le client peut maintenant les uploader lui-même via `/admin/galerie` une fois ses photos triées/exportées hors du repo. Rien n'est commité.
+**En attente :** confirmation que le crash Turbopack ne revient pas (sinon fournir la trace terminal complète). Assets réels toujours à fournir — le client peut maintenant les uploader lui-même via `/admin/galerie` une fois ses photos triées/exportées hors du repo.
+
+## 2026-09-02 (suite 4) — Intégration des vrais logos Fenou Higbé
+
+**Contexte.** Le client a déposé 2 logos officiels dans `assets img & video/` (hors suivi Git, dossier de travail local) : le logo principal "Fenou HIGBÉ" (texte blanc + bandeau dégradé orange/or "LE MARCHÉ DES JEUNES ENTREPRENEURS BÉNINOIS") et un logo secondaire "Fenou XWÉ" (texte bordeaux + bandeau vert "LA GRANDE FÊTE DU MARCHÉ FENOU", pour la soirée de clôture du Grand Fenou Higbé). Le logo principal n'existait qu'en version blanche (pour fonds sombres) — une variante foncée a été générée par recoloration programmatique (le blanc pur devient l'encre de marque `#0c0c0b`, le bandeau dégradé reste inchangé) pour les contextes à fond clair.
+
+**Fait :**
+- 4 fichiers générés dans `public/logo/` : `fenou-higbe-white.png` / `fenou-higbe-dark.png` (logo principal, recadré, deux variantes de contraste) et `fenou-xwe-dark.png` / `fenou-xwe-white.png` (logo Fenou Xwé, idem).
+- Remplace le monogramme texte "FH" + wordmark improvisé par le vrai logo dans : `Header` (variante foncée), `Footer` (variante blanche), sidebar admin (`(dashboard)/layout.tsx`, variante foncée), page de connexion admin (variante foncée), page 404 (`not-found.tsx`, variante blanche).
+- `ProgramGrid` : la carte "Fenou Xwé" affiche désormais le vrai logo secondaire (variante blanche) à la place du titre texte + icône générique — matching exact sur `activity.title === "Fenou Xwé"`, se dégrade proprement vers le rendu texte générique si ce titre est modifié depuis l'admin.
+- `npm run lint` et `npm run build` propres. Vérifié visuellement par capture d'écran (header, footer, login) : logos nets et bien contrastés sur chaque fond.
+
+**Non commité à ce stade** (le dossier source `assets img & video/` reste local, hors suivi Git — seuls les PNG traités dans `public/logo/` sont versionnés).
 
 ## 2026-09-02 — Retrait du curseur personnalisé, animations premium hero→footer
 

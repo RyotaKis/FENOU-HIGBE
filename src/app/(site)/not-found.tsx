@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { CtaLink } from "@/components/CtaLink";
 import { FadeIn } from "@/components/motion/FadeIn";
 
@@ -8,7 +9,14 @@ export default function NotFound() {
   return (
     <div className="grain relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden bg-ink px-6 text-center text-white">
       <FadeIn y={20} className="flex flex-col items-center">
-        <p className="font-display text-lg italic text-brand-yellow">
+        <Image
+          src="/logo/fenou-higbe-white.png"
+          alt="Fenou Higbé"
+          width={608}
+          height={306}
+          className="h-10 w-auto"
+        />
+        <p className="mt-6 font-display text-lg italic text-brand-yellow">
           Perdu en chemin ?
         </p>
         <h1 className="mt-3 text-6xl font-bold tracking-tight sm:text-8xl">

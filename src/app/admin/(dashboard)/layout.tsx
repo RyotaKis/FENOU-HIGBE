@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -31,9 +32,13 @@ export default async function AdminDashboardLayout({
   return (
     <div className="flex min-h-screen bg-neutral-50">
       <aside className="w-64 shrink-0 border-r border-neutral-200 bg-white p-6">
-        <p className="font-black">
-          FENOU <span className="text-brand-orange">HIGBÉ</span>
-        </p>
+        <Image
+          src="/logo/fenou-higbe-dark.png"
+          alt="Fenou Higbé"
+          width={608}
+          height={306}
+          className="h-8 w-auto"
+        />
         <nav className="mt-8 flex flex-col gap-1 text-sm">
           {NAV.map((item) => (
             <Link
