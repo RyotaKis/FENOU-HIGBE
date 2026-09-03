@@ -50,3 +50,20 @@ export function pickList<T extends ListItem>(
   const raw = content[sectionKey] as unknown as { items?: T[] } | undefined;
   return raw?.items && raw.items.length > 0 ? raw.items : fallback;
 }
+
+const DEFAULT_LOGO_HEADER = "/logo/fenou-higbe-dark.png";
+const DEFAULT_LOGO_FOOTER = "/logo/fenou-higbe-white.png";
+
+/**
+ * Logo de la marque (réglages globaux, page_slug "site"), avec repli sur
+ * les fichiers statiques d'origine tant que rien n'a été uploadé depuis
+ * l'admin (Contenu des pages → Réglages globaux → Logo).
+ */
+export async function getSiteLogo(): Promise<{ header: string; footer: string }> {
+  const content = await getPageContent("site");
+  const logos = content.logos;
+  return {
+    header: pick(logos, "logo_header", DEFAULT_LOGO_HEADER),
+    footer: pick(logos, "logo_footer", DEFAULT_LOGO_FOOTER),
+  };
+}

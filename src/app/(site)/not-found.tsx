@@ -2,15 +2,18 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { CtaLink } from "@/components/CtaLink";
 import { FadeIn } from "@/components/motion/FadeIn";
+import { getSiteLogo } from "@/lib/pageContent";
 
 export const metadata: Metadata = { title: "Page introuvable" };
 
-export default function NotFound() {
+export default async function NotFound() {
+  const logo = await getSiteLogo();
+
   return (
     <div className="grain relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden bg-ink px-6 text-center text-white">
       <FadeIn y={20} className="flex flex-col items-center">
         <Image
-          src="/logo/fenou-higbe-white.png"
+          src={logo.footer}
           alt="Fenou Higbé"
           width={608}
           height={306}

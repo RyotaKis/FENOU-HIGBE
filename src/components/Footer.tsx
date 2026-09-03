@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getSiteLogo } from "@/lib/pageContent";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import { Reveal } from "@/components/motion/Reveal";
 
@@ -19,13 +20,15 @@ const SOCIALS = [
   { label: "TikTok", href: "#" },
 ];
 
-export function Footer() {
+export async function Footer() {
+  const logo = await getSiteLogo();
+
   return (
     <footer className="grain relative mt-auto overflow-hidden border-t border-white/10 bg-ink px-4 py-16 text-neutral-300">
       <Reveal className="relative mx-auto grid max-w-6xl gap-12 sm:grid-cols-3" y={16}>
         <div>
           <Image
-            src="/logo/fenou-higbe-white.png"
+            src={logo.footer}
             alt="Fenou Higbé"
             width={608}
             height={306}

@@ -2,18 +2,32 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getSiteLogo } from "@/lib/pageContent";
 import { logout } from "@/app/admin/actions";
 
-const NAV = [
-  { href: "/admin", label: "Vue d'ensemble" },
-  { href: "/admin/contenu", label: "Contenu des pages" },
-  { href: "/admin/editions", label: "Éditions du Tour" },
-  { href: "/admin/galerie", label: "Galerie" },
-  { href: "/admin/partenaires", label: "Partenaires" },
-  { href: "/admin/chiffres", label: "Chiffres clés" },
-  { href: "/admin/candidatures", label: "Candidatures exposants" },
-  { href: "/admin/messages", label: "Messages de contact" },
-  { href: "/admin/newsletter", label: "Newsletter" },
+const NAV_GROUPS = [
+  {
+    label: "Vue d'ensemble",
+    items: [{ href: "/admin", label: "Tableau de bord" }],
+  },
+  {
+    label: "Contenu du site",
+    items: [
+      { href: "/admin/contenu", label: "Textes & images des pages" },
+      { href: "/admin/editions", label: "Éditions du Tour" },
+      { href: "/admin/galerie", label: "Galerie photo" },
+      { href: "/admin/partenaires", label: "Partenaires" },
+      { href: "/admin/chiffres", label: "Chiffres clés" },
+    ],
+  },
+  {
+    label: "Activité",
+    items: [
+      { href: "/admin/candidatures", label: "Candidatures exposants" },
+      { href: "/admin/messages", label: "Messages de contact" },
+      { href: "/admin/newsletter", label: "Newsletter" },
+    ],
+  },
 ];
 
 export default async function AdminDashboardLayout({
@@ -29,28 +43,41 @@ export default async function AdminDashboardLayout({
   // Défense en profondeur : le proxy protège déjà /admin/*, on revérifie ici.
   if (!user) redirect("/admin/login");
 
+  const logo = await getSiteLogo();
+
   return (
     <div className="flex min-h-screen bg-neutral-50">
-      <aside className="w-64 shrink-0 border-r border-neutral-200 bg-white p-6">
-        <Image
-          src="/logo/fenou-higbe-dark.png"
-          alt="Fenou Higbé"
-          width={608}
-          height={306}
-          className="h-8 w-auto"
-        />
-        <nav className="mt-8 flex flex-col gap-1 text-sm">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-md px-3 py-2 font-medium text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900"
-            >
-              {item.label}
-            </Link>
+      <aside className="w-64 shrink-0 border-r border-neutral-200 bg-white">
+        <div className="border-b border-neutral-100 p-6">
+          <Image
+            src={logo.header}
+            alt="Fenou Higbé"
+            width={608}
+            height={306}
+            className="h-8 w-auto"
+          />
+        </div>
+        <nav className="flex flex-col gap-6 p-6 text-sm">
+          {NAV_GROUPS.map((group) => (
+            <div key={group.label}>
+              <p className="px-3 text-[10px] font-semibold uppercase tracking-caps text-neutral-400">
+                {group.label}
+              </p>
+              <div className="mt-2 flex flex-col gap-1">
+                {group.items.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="rounded-md px-3 py-2 font-medium text-neutral-600 transition-colors hover:bg-brand-cream hover:text-neutral-900"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
-        <form action={logout} className="mt-8">
+        <form action={logout} className="p-6 pt-0">
           <button
             type="submit"
             className="w-full rounded-md border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-100"

@@ -183,6 +183,24 @@ export const PAGE_CONTENT_SCHEMA: PageDef[] = [
     label: "Tour 2026",
     sections: [single("hero", "Introduction", heroFields)],
   },
+  {
+    slug: "site",
+    label: "Réglages globaux (logo)",
+    sections: [
+      single("logos", "Logo de la marque", [
+        {
+          key: "logo_header",
+          label: "Logo sur fond clair (header, admin, connexion)",
+          type: "image",
+        },
+        {
+          key: "logo_footer",
+          label: "Logo sur fond sombre (pied de page, page 404)",
+          type: "image",
+        },
+      ]),
+    ],
+  },
 ];
 
 export function getPageDef(slug: string): PageDef | undefined {

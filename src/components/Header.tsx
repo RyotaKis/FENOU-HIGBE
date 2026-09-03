@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getNextEdition } from "@/lib/editions";
+import { getSiteLogo } from "@/lib/pageContent";
 import { Countdown } from "@/components/Countdown";
 import { MobileNav } from "@/components/MobileNav";
 import { FadeIn } from "@/components/motion/FadeIn";
@@ -16,7 +17,7 @@ const NAV_LINKS = [
 ];
 
 export async function Header() {
-  const nextEdition = await getNextEdition();
+  const [nextEdition, logo] = await Promise.all([getNextEdition(), getSiteLogo()]);
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -35,7 +36,7 @@ export async function Header() {
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link href="/" className="flex items-center">
             <Image
-              src="/logo/fenou-higbe-dark.png"
+              src={logo.header}
               alt="Fenou Higbé"
               width={608}
               height={306}

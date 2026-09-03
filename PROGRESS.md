@@ -181,7 +181,19 @@ Le client a ensuite demandé comment ajouter les images, notamment ~5 Go de phot
 - `/admin/contenu/[slug]/page.tsx` mis à jour pour utiliser `ImageField`.
 - `npm run lint` et `npm run build` propres.
 
-Le client a aussi signalé être insatisfait du rendu actuel du panel de contenu (« pas la main sur tout ») — clarification demandée avant de retravailler l'interface, la remarque étant encore trop vague pour agir dessus sans repartir dans la mauvaise direction.
+Le client a aussi signalé être insatisfait du rendu actuel du panel de contenu (« pas la main sur tout »). Clarifié via questions : (1) logos encore codés en dur, (2) interface admin trop austère, (3) pas de contrôle sur la mise en page (ordre/masquage des sections), (4) navigation admin confuse.
+
+**Fait pour (1) et (4) :**
+- Nouvelle entrée `site` dans `pageContentSchema.ts` (« Réglages globaux ») avec une section `logos` (2 champs image : logo fond clair, logo fond sombre).
+- `getSiteLogo()` ajouté à `lib/pageContent.ts` — repli sur les PNG statiques (`/logo/fenou-higbe-dark.png` / `-white.png`) tant que rien n'est uploadé.
+- Header, Footer (devenu async), page 404, sidebar admin et page de connexion admin (scindée en wrapper serveur `page.tsx` + `LoginForm` client pour pouvoir charger le logo) lisent désormais ce réglage — le client peut changer son logo partout depuis `/admin/contenu/site` sans toucher au code.
+- Nav admin réorganisée en 3 groupes visuels (Vue d'ensemble / Contenu du site / Activité) avec des libellés plus clairs (« Textes & images des pages », « Galerie photo »).
+
+**(2) interface austère** : partiellement couvert (les titres `h1/h2/h3` de l'admin héritent déjà de la police d'affichage Playfair via la règle globale) — pas de refonte visuelle plus poussée pour l'instant, à la demande implicite de rester bornée sur cette itération.
+
+**(3) mise en page (ordre/masquage des sections)** : identifié comme le chantier le plus lourd (refonte des chapitres de la home en composants pilotés par données + interface de réordonnancement) — approche à valider avec le client avant de s'y lancer, pas commencé.
+
+`npm run lint` et `npm run build` propres. Vérifié en dev : page de connexion affiche bien le logo par défaut (repli fonctionnel).
 
 ## 2026-09-02 — Retrait du curseur personnalisé, animations premium hero→footer
 
