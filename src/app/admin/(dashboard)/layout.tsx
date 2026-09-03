@@ -14,6 +14,7 @@ const NAV_GROUPS = [
     label: "Contenu du site",
     items: [
       { href: "/admin/contenu", label: "Textes & images des pages" },
+      { href: "/admin/mise-en-page", label: "Mise en page — Accueil" },
       { href: "/admin/editions", label: "Éditions du Tour" },
       { href: "/admin/galerie", label: "Galerie photo" },
       { href: "/admin/partenaires", label: "Partenaires" },

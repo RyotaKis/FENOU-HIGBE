@@ -191,9 +191,21 @@ Le client a aussi signalé être insatisfait du rendu actuel du panel de contenu
 
 **(2) interface austère** : partiellement couvert (les titres `h1/h2/h3` de l'admin héritent déjà de la police d'affichage Playfair via la règle globale) — pas de refonte visuelle plus poussée pour l'instant, à la demande implicite de rester bornée sur cette itération.
 
-**(3) mise en page (ordre/masquage des sections)** : identifié comme le chantier le plus lourd (refonte des chapitres de la home en composants pilotés par données + interface de réordonnancement) — approche à valider avec le client avant de s'y lancer, pas commencé.
+**(3) mise en page (ordre/masquage des sections)** : identifié comme le chantier le plus lourd — client consulté, a choisi l'option complète (réordonnancement + masquage, pas seulement masquage). Réalisé dans la foulée (voir entrée suivante).
 
 `npm run lint` et `npm run build` propres. Vérifié en dev : page de connexion affiche bien le logo par défaut (repli fonctionnel).
+
+## 2026-09-05 (suite) — Réordonnancement et masquage des chapitres de la home
+
+**Contexte.** Suite du point (3) ci-dessus. Choix du client : contrôle complet (ordre + visibilité), pas seulement masquage. Choix technique : flèches haut/bas plutôt que glisser-déposer, pour rester cohérent avec le reste de l'admin (formulaires natifs, zéro JS/librairie supplémentaire).
+
+**Fait :**
+- `src/lib/homeLayout.ts` — registre des 10 chapitres réordonnables de la home (`manifeste`, `chiffres`, `pourquoi_projet`, `concept`, `choix_fort`, `impact`, `programme`, `fondatrice`, `tour_teaser`, `cta_finale`) avec libellés et ordre par défaut. Le hero n'en fait pas partie — il reste toujours en tête, structurellement différent (pleine hauteur, pas un `ChapterSection`).
+- `getHomeLayout()` (pageContent.ts) — lit l'ordre/la visibilité depuis `page_content` (page_slug "home", section_key réservée "_layout"), repli sur l'ordre par défaut si rien n'est encore configuré.
+- `moveChapter` / `toggleChapterHidden` (actions.ts) — déplacent un chapitre d'un cran ou basculent sa visibilité, upsert dans la même ligne `_layout`.
+- `src/app/(site)/page.tsx` restructurée : chaque chapitre est maintenant une valeur d'un objet `chapters` indexé par clé (même JSX qu'avant, aucun changement visuel par défaut), rendu dans l'ordre et filtré selon `layout.order` / `layout.hidden`.
+- Nouvelle page admin `/admin/mise-en-page` — liste les 10 chapitres avec flèches ↑/↓ et bouton Masquer/Afficher par chapitre, lien ajouté à la nav admin.
+- `npm run lint` et `npm run build` propres. Vérifié en dev : la home affiche toujours tous les chapitres dans l'ordre par défaut (aucune régression visuelle tant que rien n'est reconfiguré depuis l'admin).
 
 ## 2026-09-02 — Retrait du curseur personnalisé, animations premium hero→footer
 

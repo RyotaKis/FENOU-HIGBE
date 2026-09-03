@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { DEFAULT_CHAPTER_ORDER, type ChapterKey } from "@/lib/homeLayout";
 
 export type SectionContent = Record<string, string>;
 export type ListItem = Record<string, string>;
@@ -66,4 +67,20 @@ export async function getSiteLogo(): Promise<{ header: string; footer: string }>
     header: pick(logos, "logo_header", DEFAULT_LOGO_HEADER),
     footer: pick(logos, "logo_footer", DEFAULT_LOGO_FOOTER),
   };
+}
+
+export type HomeLayout = { order: ChapterKey[]; hidden: ChapterKey[] };
+
+/**
+ * Ordre et visibilité des chapitres de la home, pilotés depuis
+ * /admin/mise-en-page. Le hero n'en fait pas partie : il reste toujours
+ * en premier, structurellement différent des autres chapitres.
+ */
+export async function getHomeLayout(): Promise<HomeLayout> {
+  const content = await getPageContent("home");
+  const raw = content["_layout"] as unknown as
+    | { order?: ChapterKey[]; hidden?: ChapterKey[] }
+    | undefined;
+  const order = raw?.order?.length ? raw.order : DEFAULT_CHAPTER_ORDER;
+  return { order, hidden: raw?.hidden ?? [] };
 }

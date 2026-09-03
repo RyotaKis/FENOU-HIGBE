@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { FieldDef } from "@/lib/pageContentSchema";
+import { DEFAULT_CHAPTER_ORDER, type ChapterKey } from "@/lib/homeLayout";
 
 /** Chaque action vérifie sa propre session — le rendu conditionnel ne suffit pas (cf. Next.js data-security guide). */
 async function requireAdmin() {
@@ -225,4 +226,68 @@ export async function deleteListItem(
   const items = await getListItems(supabase, pageSlug, sectionKey);
   items.splice(index, 1);
   await saveListItems(supabase, pageSlug, sectionKey, items);
+}
+
+type HomeLayoutData = { order: ChapterKey[]; hidden: ChapterKey[] };
+
+async function getLayout(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+): Promise<HomeLayoutData> {
+  const { data } = await supabase
+    .from("page_content")
+    .select("contenu")
+    .eq("page_slug", "home")
+    .eq("section_key", "_layout")
+    .maybeSingle();
+
+  const raw = data?.contenu as Partial<HomeLayoutData> | null;
+  return {
+    order: raw?.order?.length ? raw.order : [...DEFAULT_CHAPTER_ORDER],
+    hidden: raw?.hidden ?? [],
+  };
+}
+
+async function saveLayout(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  layout: HomeLayoutData,
+) {
+  await supabase.from("page_content").upsert(
+    {
+      page_slug: "home",
+      section_key: "_layout",
+      contenu: layout,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "page_slug,section_key" },
+  );
+  revalidatePath("/admin/mise-en-page");
+  revalidatePath("/");
+}
+
+/** Déplace un chapitre de la home d'un cran vers le haut ou le bas. */
+export async function moveChapter(key: ChapterKey, direction: "up" | "down") {
+  const supabase = await requireAdmin();
+  const layout = await getLayout(supabase);
+  const index = layout.order.indexOf(key);
+  if (index === -1) return;
+
+  const swapWith = direction === "up" ? index - 1 : index + 1;
+  if (swapWith < 0 || swapWith >= layout.order.length) return;
+
+  const order = [...layout.order];
+  [order[index], order[swapWith]] = [order[swapWith], order[index]];
+  await saveLayout(supabase, { ...layout, order });
+}
+
+/** Bascule la visibilité d'un chapitre de la home (masqué/affiché). */
+export async function toggleChapterHidden(key: ChapterKey) {
+  const supabase = await requireAdmin();
+  const layout = await getLayout(supabase);
+  const hidden = new Set(layout.hidden);
+  if (hidden.has(key)) {
+    hidden.delete(key);
+  } else {
+    hidden.add(key);
+  }
+  await saveLayout(supabase, { ...layout, hidden: [...hidden] });
 }
