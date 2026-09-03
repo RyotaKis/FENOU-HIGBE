@@ -132,30 +132,11 @@ export async function saveSectionContent(
   const supabase = await requireAdmin();
   const contenu: Record<string, string> = {};
 
+  // Les champs image sont déjà uploadés côté navigateur (voir ImageField) —
+  // ce formulaire ne reçoit que leur URL publique, jamais le fichier lui-même,
+  // pour rester largement sous la limite de payload des Server Actions.
   for (const field of fields) {
-    if (field.type === "image") {
-      const file = formData.get(field.key);
-      const current = String(formData.get(`${field.key}_current`) ?? "");
-
-      if (file instanceof File && file.size > 0) {
-        const ext = file.name.split(".").pop() ?? "jpg";
-        const path = `${pageSlug}/${sectionKey}-${field.key}-${Date.now()}.${ext}`;
-        const { error } = await supabase.storage
-          .from("site-content")
-          .upload(path, file, { upsert: true });
-
-        if (!error) {
-          const { data } = supabase.storage.from("site-content").getPublicUrl(path);
-          contenu[field.key] = data.publicUrl;
-        } else if (current) {
-          contenu[field.key] = current;
-        }
-      } else if (current) {
-        contenu[field.key] = current;
-      }
-    } else {
-      contenu[field.key] = String(formData.get(field.key) ?? "").trim();
-    }
+    contenu[field.key] = String(formData.get(field.key) ?? "").trim();
   }
 
   await supabase.from("page_content").upsert(

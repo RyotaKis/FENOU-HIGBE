@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { getPageDef } from "@/lib/pageContentSchema";
 import { getPageContent, pickList } from "@/lib/pageContent";
 import { saveSectionContent, addListItem, deleteListItem } from "@/app/admin/actions";
+import { ImageField } from "@/components/admin/ImageField";
 
 export default async function AdminContenuPageSlug({
   params,
@@ -154,31 +154,13 @@ export default async function AdminContenuPageSlug({
 
                 if (field.type === "image") {
                   return (
-                    <div key={field.key}>
-                      <label className="text-sm font-medium">
-                        {field.label}
-                      </label>
-                      {value && (
-                        <Image
-                          src={value}
-                          alt=""
-                          width={160}
-                          height={120}
-                          className="mt-2 h-24 w-32 object-cover"
-                        />
-                      )}
-                      <input
-                        type="file"
-                        name={field.key}
-                        accept="image/*"
-                        className="mt-2 block w-full text-sm"
-                      />
-                      <input
-                        type="hidden"
-                        name={`${field.key}_current`}
-                        value={value}
-                      />
-                    </div>
+                    <ImageField
+                      key={field.key}
+                      name={field.key}
+                      label={field.label}
+                      currentUrl={value}
+                      pathPrefix={`${pageDef.slug}/${section.key}-${field.key}`}
+                    />
                   );
                 }
 

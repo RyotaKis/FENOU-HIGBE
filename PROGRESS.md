@@ -171,6 +171,18 @@ Le client a ensuite demandé comment ajouter les images, notamment ~5 Go de phot
 
 **Fait (suite) :** `npm run lint` et `npm run build` propres. Diagnostic mené en inspectant les éléments `&lt;img&gt;` réellement rendus côté navigateur (Playwright) pour confirmer l'origine du contenu affiché.
 
+## 2026-09-05 — Correctif upload d'images dans le CMS admin
+
+**Contexte.** Le client a signalé une erreur `Body exceeded 1 MB limit` en uploadant une image depuis `/admin/contenu/[slug]` — les formulaires de section faisaient transiter le fichier image brut à travers une Server Action Next.js, plafonnée à 1 Mo par défaut, ce qui échouait dès qu'une vraie photo (même compressée) dépassait ce seuil.
+
+**Fait :**
+- `src/components/admin/ImageField.tsx` — nouveau champ image qui compresse (réutilise `compressImage`) et uploade directement depuis le navigateur vers Supabase Storage (même pattern que l'uploader de galerie), puis ne transmet que l'URL publique résultante au formulaire via un champ caché.
+- `saveSectionContent` (actions.ts) simplifiée : ne gère plus l'upload de fichier côté serveur, lit uniformément tous les champs (texte et image) comme de simples chaînes — la Server Action ne reçoit plus jamais de binaire, donc plus jamais de risque de dépasser la limite de payload, quelle que soit la taille de l'image d'origine.
+- `/admin/contenu/[slug]/page.tsx` mis à jour pour utiliser `ImageField`.
+- `npm run lint` et `npm run build` propres.
+
+Le client a aussi signalé être insatisfait du rendu actuel du panel de contenu (« pas la main sur tout ») — clarification demandée avant de retravailler l'interface, la remarque étant encore trop vague pour agir dessus sans repartir dans la mauvaise direction.
+
 ## 2026-09-02 — Retrait du curseur personnalisé, animations premium hero→footer
 
 **Contexte.** Le client a jugé le curseur personnalisé (point qui grossit au survol) bizarre — retiré. Demande d'animations premium sur l'ensemble du site, du hero au footer, pas seulement sur les cartes.
