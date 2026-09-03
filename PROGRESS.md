@@ -207,6 +207,17 @@ Le client a aussi signalé être insatisfait du rendu actuel du panel de contenu
 - Nouvelle page admin `/admin/mise-en-page` — liste les 10 chapitres avec flèches ↑/↓ et bouton Masquer/Afficher par chapitre, lien ajouté à la nav admin.
 - `npm run lint` et `npm run build` propres. Vérifié en dev : la home affiche toujours tous les chapitres dans l'ordre par défaut (aucune régression visuelle tant que rien n'est reconfiguré depuis l'admin).
 
+## 2026-09-06 — Correctif menu mobile invisible + fond flouté
+
+**Contexte.** Le client a signalé que le menu déroulant mobile était quasi invisible (seuls les survols des liens se voyaient).
+
+**Diagnostic.** Pas un problème de style : `MobileNav` était rendu à l'intérieur du `<FadeIn>` du `Header` (ajouté lors de la passe d'animations premium). Framer Motion applique un `transform` CSS à l'élément animé même après la fin de l'animation — or un `transform` sur un ancêtre casse `position: fixed` sur ses descendants (le point de référence devient cet ancêtre au lieu du viewport). Le panneau et le fond du menu mobile (tous deux `fixed`) se retrouvaient donc positionnés/redimensionnés par rapport à la barre de header (~60px de haut) au lieu du viewport entier — d'où l'apparence quasi invisible.
+
+**Fait :**
+- `MobileNav.tsx` — le panneau et l'overlay sont désormais rendus via un portail React (`createPortal`) directement dans `document.body`, immunisés contre tout `transform` d'ancêtre, quel que soit l'endroit où le déclencheur est placé dans l'arbre. Pattern `mounted` standard (effet + état) pour rester compatible SSR sans hydration mismatch.
+- Fond du panneau passé de `bg-white` plein à `bg-white/80 backdrop-blur-xl` (verre dépoli) + overlay assombri à `bg-black/40`, comme demandé.
+- `npm run lint` et `npm run build` propres. Vérifié visuellement en dev sur viewport mobile (390×844) : menu bien visible, effet flouté confirmé, tous les liens lisibles par-dessus la page.
+
 ## 2026-09-02 — Retrait du curseur personnalisé, animations premium hero→footer
 
 **Contexte.** Le client a jugé le curseur personnalisé (point qui grossit au survol) bizarre — retiré. Demande d'animations premium sur l'ensemble du site, du hero au footer, pas seulement sur les cartes.
