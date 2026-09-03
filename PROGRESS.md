@@ -158,6 +158,19 @@ Le client a ensuite demandé comment ajouter les images, notamment ~5 Go de phot
 
 **Non commité à ce stade** (le dossier source `assets img & video/` reste local, hors suivi Git — seuls les PNG traités dans `public/logo/` sont versionnés).
 
+## 2026-09-04 — Photo réelle en fond du hero
+
+**Contexte.** Le client a déposé `HERO.jpg` dans `assets img & video/` — une photo nocturne de la statue de l'Amazone à Cotonou, foule en t-shirts jaunes Fenou Higbé, avec un filigrane logo intégré en bas à gauche. Demande : l'utiliser en fond du hero de la home.
+
+**Fait :**
+- Filigrane recadré (retrait des ~20% inférieurs de l'image, qui ne contenaient que le logo + du sol), redimensionnée (2200px de large) et compressée (JPEG qualité 78, ~560 Ko) → `public/images/hero.jpg`.
+- `HeroMedia.tsx` simplifié : l'ancien carrousel de `PlaceholderImage` (3 slides fictifs) est remplacé par cette photo réelle comme fond par défaut. Le mécanisme `overrideImage` (piloté depuis `/admin/contenu/home` → Hero → Image) reste prioritaire, donc l'admin peut toujours le remplacer sans toucher au code.
+- Dégradé renforcé (`from-black/55 via-black/35 to-black/85` + un voile latéral gauche supplémentaire) pour garder le texte du hero lisible sur cette photo dense et colorée.
+
+**⚠️ Point important découvert en vérifiant** : le champ Image de la section Hero (`/admin/contenu/home`) contient déjà une image (probablement un test fait par le client en explorant l'admin) — une image carrée floue, différente de `HERO.jpg`. Comme prévu par la conception du CMS (le contenu admin est toujours prioritaire sur la valeur par défaut du code), **c'est cette image de test qui s'affichera tant qu'elle n'est pas effacée ou remplacée** depuis `/admin/contenu/home` → section Hero → champ "Image de fond". Pas un bug — juste une conséquence attendue de la priorité admin > code. Le client doit soit vider ce champ (upload vide), soit re-uploader une image depuis l'admin s'il veut changer la photo plus tard.
+
+**Fait (suite) :** `npm run lint` et `npm run build` propres. Diagnostic mené en inspectant les éléments `&lt;img&gt;` réellement rendus côté navigateur (Playwright) pour confirmer l'origine du contenu affiché.
+
 ## 2026-09-02 — Retrait du curseur personnalisé, animations premium hero→footer
 
 **Contexte.** Le client a jugé le curseur personnalisé (point qui grossit au survol) bizarre — retiré. Demande d'animations premium sur l'ensemble du site, du hero au footer, pas seulement sur les cartes.

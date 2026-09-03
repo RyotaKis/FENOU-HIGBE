@@ -1,43 +1,21 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { PlaceholderImage } from "@/components/PlaceholderImage";
 
-// TODO(assets): replace the carousel slides below with real event photography
-// (or set an override image from the admin panel — Contenu des pages → Accueil
-// → Hero), then flip `mode` to "video" once the client supplies the final
-// hero video (mp4/webm, muted, loop-ready) and set `videoSrc`.
-const SLIDES = [
-  "Foule et stands illuminés du Grand Fenou Higbé de nuit",
-  "Jeune exposante présentant ses produits artisanaux",
-  "Ambiance festive et colorée du marché en journée",
-];
+// TODO(assets): swap /public/images/hero.jpg for a different shot anytime,
+// or set an override image from the admin panel (Contenu des pages →
+// Accueil → Hero) — it takes priority over this default. Flip `mode` to
+// "video" once the client supplies the final hero video (mp4/webm, muted,
+// loop-ready) and set `videoSrc`.
+const DEFAULT_IMAGE = "/images/hero.jpg";
 
 type HeroMediaProps = {
-  mode?: "carousel" | "video";
+  mode?: "image" | "video";
   videoSrc?: string;
-  intervalMs?: number;
   overrideImage?: string;
 };
 
-export function HeroMedia({
-  mode = "carousel",
-  videoSrc,
-  intervalMs = 5000,
-  overrideImage,
-}: HeroMediaProps) {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    if (mode !== "carousel" || overrideImage) return;
-    const id = setInterval(() => {
-      setIndex((i) => (i + 1) % SLIDES.length);
-    }, intervalMs);
-    return () => clearInterval(id);
-  }, [mode, intervalMs, overrideImage]);
-
+export function HeroMedia({ mode = "image", videoSrc, overrideImage }: HeroMediaProps) {
   return (
     <div className="absolute inset-0 -z-10">
       {mode === "video" && videoSrc ? (
@@ -49,34 +27,18 @@ export function HeroMedia({
           loop
           playsInline
         />
-      ) : overrideImage ? (
+      ) : (
         <Image
-          src={overrideImage}
+          src={overrideImage || DEFAULT_IMAGE}
           alt=""
           fill
           priority
-          className="object-cover"
+          sizes="100vw"
+          className="object-cover object-[center_25%]"
         />
-      ) : (
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={index}
-            className="absolute inset-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
-          >
-            <PlaceholderImage
-              description={SLIDES[index]}
-              aspectRatio="auto"
-              className="h-full w-full"
-              seed={SLIDES[index]}
-            />
-          </motion.div>
-        </AnimatePresence>
       )}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/70" />
+      <div className="absolute inset-0 bg-linear-to-b from-black/55 via-black/35 to-black/85" />
+      <div className="absolute inset-0 bg-linear-to-r from-black/60 via-transparent to-transparent" />
     </div>
   );
 }

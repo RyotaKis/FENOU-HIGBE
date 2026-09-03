@@ -105,15 +105,15 @@ export default async function AccueilPage() {
                 {pick(
                   hero,
                   "eyebrow",
-                  "Marché international des jeunes entrepreneurs — Bénin",
+                  "Marché international des jeunes entrepreneurs africains",
                 )}
               </p>
             </HeroIntroItem>
             <HeroIntroItem>
               <h1 className="mt-4 font-display text-6xl font-normal leading-[0.95] sm:text-8xl">
-                Fènou
+                Fenou
                 <br />
-                <span className="italic text-brand-yellow">Higbé</span>
+                <span className="italic text-brand-yellow">HIGBÉ</span>
               </h1>
             </HeroIntroItem>
             <HeroIntroItem>
@@ -121,7 +121,7 @@ export default async function AccueilPage() {
                 {pick(
                   hero,
                   "subtitle",
-                  "Un mouvement vivant. Des villes entières transformées, le temps d'un séjour, en capitale de l'entrepreneuriat africain.",
+                  "Un mouvement vivant. Une seule ambition : faire du Bénin la capitale de l'entrepreneuriat africain.",
                 )}
               </p>
             </HeroIntroItem>
