@@ -153,7 +153,7 @@ export default async function AccueilPage() {
           </Reveal>
           <div>
             <SectionHeading
-              eyebrow={pick(pourquoiProjet, "eyebrow", "Pourquoi ce projet")}
+              eyebrow={pick(pourquoiProjet, "eyebrow", "Pourquoi ce projet ?")}
               title={pick(
                 pourquoiProjet,
                 "title",
@@ -170,7 +170,7 @@ export default async function AccueilPage() {
                 {pick(
                   pourquoiProjet,
                   "body",
-                  "C'est de ce constat qu'est né le FENOU HIGBÉ, un marché mensuel, festif et inclusif. Chaque dernier week-end du mois, dans différentes villes du Bénin, des dizaines de jeunes entrepreneurs installent leur savoir-faire, leurs produits, leurs espoirs — et le public répond présent.",
+                  "C'est de ce constat qu'est né le FENOU HIGBÉ, un marché festif et inclusif. Chaque mois, dans différentes villes du Bénin, bon nombre de jeunes entrepreneurs installent leur savoir-faire, leurs produits, leurs espoirs — et le public répond présent.",
                 )}
               </p>
             </Reveal>
@@ -184,7 +184,7 @@ export default async function AccueilPage() {
         <SectionHeading
           eyebrow="Le concept"
           title="Un tremplin. Un lieu de rencontres. Un laboratoire vivant."
-          intro="Un marché itinérant qui met en lumière les jeunes entrepreneurs africains, mais pas seulement."
+          intro="Un marché spécial qui met en lumière les jeunes entrepreneurs africains, mais pas seulement."
           tone="dark"
         />
         <div className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2">
@@ -219,7 +219,7 @@ export default async function AccueilPage() {
               intro={pick(
                 choixFort,
                 "intro",
-                "Beaucoup de jeunes n'ont pas encore les moyens d'investir de grosses sommes dans des expositions, mais ils ont des produits de qualité, des idées innovantes et une envie immense de réussir.",
+                "Beaucoup de jeunes n'ont pas encore les moyens d'investir de grosses sommes dans de très grandes expositions, mais ils ont des produits de qualité, des idées innovantes et une envie immense de réussir.",
               )}
             />
             <Reveal className="mt-6 max-w-xl" delay={0.1}>
@@ -227,7 +227,7 @@ export default async function AccueilPage() {
                 {pick(
                   choixFort,
                   "body",
-                  "Le FENOU HIGBÉ leur ouvre les portes du marché à un coût symbolique, pour leur donner ce premier tremplin vers la réussite. Chaque mois, plus de 30 jeunes entrepreneurs exposent, bénéficient d'un stand professionnel, de visibilité médiatique, et surtout d'un public prêt à consommer local.",
+                  "Le FENOU HIGBÉ leur ouvre les portes du marché à un coût symbolique, pour leur donner ce premier tremplin vers la réussite. Chaque mois, plusieurs jeunes entrepreneurs,et pas que, exposent, bénéficient d'un stand professionnel, de visibilité médiatique, et surtout d'un public prêt à consommer local.",
                 )}
               </p>
             </Reveal>
@@ -297,7 +297,7 @@ export default async function AccueilPage() {
                 {pick(
                   impact,
                   "testimonial_quote",
-                  "meilleure foire de l'année 🙌 j'ai juré",
+                  "meilleure marché de l'année 🙌 j'ai juré",
                 )}{" "}
                 »
               </p>
@@ -321,13 +321,13 @@ export default async function AccueilPage() {
           eyebrow={pick(
             programme,
             "eyebrow",
-            "27 octobre – 1er novembre 2026 · Cotonou, Place de l'Amazone",
+            "27 octobre – 1er novembre 2026 · Cotonou",
           )}
           title={pick(programme, "title", "Le Grand Fenou Higbé, 4ème édition")}
           intro={pick(
             programme,
             "intro",
-            "Une semaine de programme, du coup d'envoi festif à la grande soirée de clôture.",
+            "Une semaine de programme, du coup d'envoi festif à la grande fête de clôture.",
           )}
           tone="dark"
         />
