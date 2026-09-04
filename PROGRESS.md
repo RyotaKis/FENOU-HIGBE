@@ -232,3 +232,12 @@ Le client a aussi signalé être insatisfait du rendu actuel du panel de contenu
 - `npm run lint` et `npm run build` propres. Vérifié en dev : `cursor: auto` confirmé (curseur système par défaut restauré), rendu du hero et du footer/CTA finale conformes.
 
 **En attente :** assets réels du client, QA humaine complète dans un vrai navigateur (notamment ressentir les transitions de page et le hero en conditions réelles), et le restylage approfondi des pages secondaires resté en suspens. Rien n'est commité.
+
+## 2026-09-07 — Images sur les cartes du programme + CODEMAP détaillée
+
+**Contexte.** Le client passe en édition manuelle du code. Trois demandes : confirmation que les chiffres clés de repli sont bien des valeurs fixes définies dans le code (oui, déjà le cas — `FALLBACK_STATS` dans `page.tsx`, utilisé seulement si la table Supabase `stats` est vide) ; `CODEMAP.md` jugée pas assez précise (pas de repères ligne par ligne) ; possibilité d'ajouter des images/vidéos directement dans le code (pas seulement via l'admin), en particulier sur les cartes du programme du Grand Fenou Higbé.
+
+**Fait :**
+- `ProgramGrid.tsx` — le type `ProgramActivity` accepte désormais un champ `image` optionnel. Grande tuile (Marché Fenou) → image de fond plein cadre avec voile sombre dégradé ; tuile normale → vignette au-dessus du titre. Lignes commentées `// image: "..."` déjà en place sur chaque activité de `DEFAULT_ACTIVITIES` à titre d'exemple, prêtes à décommenter.
+- `CODEMAP.md` enrichie : tableau de repères ligne par ligne pour chaque chapitre de la home (clé, plage de lignes, texte de repère à chercher), nouvelle section « Ajouter une image ou une vidéo directement dans le code » (dossier `public/images/`, usage de `next/image`/`<video>`, endroits déjà prêts à recevoir un média en dur vs. le faire depuis l'admin).
+- `npm run lint` et `npm run build` propres.

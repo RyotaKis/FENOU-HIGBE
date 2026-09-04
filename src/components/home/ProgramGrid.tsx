@@ -27,6 +27,13 @@ export type ProgramActivity = {
   title: string;
   description: string;
   caption: string;
+  /**
+   * Chemin d'image optionnel (ex. "/images/programme/caravane.jpg" — dépose
+   * le fichier dans public/images/programme/). Grande tuile → image de fond
+   * plein cadre avec voile sombre ; tuile normale → vignette au-dessus du
+   * titre. Laisse vide pour garder l'icône générique.
+   */
+  image?: string;
 };
 
 export const DEFAULT_ACTIVITIES: ProgramActivity[] = [
@@ -35,36 +42,42 @@ export const DEFAULT_ACTIVITIES: ProgramActivity[] = [
     description:
       "+150 entrepreneurs africains, +2 000 produits uniques, dégustations gratuites — les saveurs authentiques du Bénin et d'ailleurs.",
     caption: "Tous les jours · Place de l'Amazone",
+    // image: "/images/programme/marche-fenou.jpg",
   },
   {
     title: "Caravane des Entrepreneurs",
     description:
       "Le coup d'envoi festif : une caravane parcourt la ville, entrepreneurs et produits en tête.",
     caption: "27 Oct · Cotonou",
+    // image: "/images/programme/caravane.jpg",
   },
   {
     title: "Fenou Startup Challenge",
     description:
       "Pitch, mentorat, opportunités de financement — 3 projets primés à l'issue du concours.",
     caption: "29 Oct · Grande scène",
+    // image: "/images/programme/startup-challenge.jpg",
   },
   {
     title: "African Food Challenge",
     description:
       "Un concours culinaire qui valorise la gastronomie africaine et les produits locaux, jugé par des experts.",
     caption: "30 Oct · Espace dégustation",
+    // image: "/images/programme/food-challenge.jpg",
   },
   {
     title: "Prestations d'artistes",
     description:
       "Musique, danse et performances — artistes béninois de renom et talents internationaux.",
     caption: "Chaque soir · Grand podium",
+    // image: "/images/programme/artistes.jpg",
   },
   {
     title: "Fenou Xwé",
     description:
       "La grande soirée de clôture, festive et immersive, célébrant l'identité béninoise à travers traditions, gastronomie et culture.",
     caption: "1er Nov · Soirée de clôture",
+    // image: "/images/programme/fenou-xwe.jpg",
   },
 ];
 
@@ -85,11 +98,27 @@ export function ProgramGrid({
           <Reveal key={`${activity.title}-${index}`} delay={index * 0.07} className={span}>
             <TiltCard max={5} className="h-full">
               <div
-                className={`group h-full border border-white/10 bg-white/4 p-6 transition-colors duration-300 group-hover:border-brand-yellow/40 hover:bg-white/7 sm:p-8 ${
+                className={`group relative h-full overflow-hidden border border-white/10 bg-white/4 p-6 transition-colors duration-300 group-hover:border-brand-yellow/40 hover:bg-white/7 sm:p-8 ${
                   big ? "flex min-h-64 flex-col justify-end" : ""
                 }`}
               >
-                {!big && activity.title !== "Fenou Xwé" && (
+                {activity.image && big && (
+                  <>
+                    <Image
+                      src={activity.image}
+                      alt=""
+                      fill
+                      className="absolute inset-0 -z-10 object-cover"
+                    />
+                    <div className="absolute inset-0 -z-10 bg-linear-to-t from-black/80 via-black/30 to-black/10" />
+                  </>
+                )}
+                {activity.image && !big && (
+                  <div className="relative -mx-6 -mt-6 mb-4 aspect-video overflow-hidden sm:-mx-8 sm:-mt-8">
+                    <Image src={activity.image} alt="" fill className="object-cover" />
+                  </div>
+                )}
+                {!activity.image && !big && activity.title !== "Fenou Xwé" && (
                   <svg
                     viewBox="0 0 24 24"
                     className="h-6 w-6 text-brand-yellow"
@@ -110,7 +139,13 @@ export function ProgramGrid({
                   />
                 ) : (
                   <h3
-                    className={`font-display font-semibold text-white ${big ? "mt-0 text-3xl" : "mt-4 text-xl"}`}
+                    className={`font-display font-semibold text-white ${
+                      big
+                        ? "mt-0 text-3xl"
+                        : activity.image
+                          ? "mt-0 text-xl"
+                          : "mt-4 text-xl"
+                    }`}
                   >
                     {activity.title}
                   </h3>
