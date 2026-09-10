@@ -54,11 +54,11 @@ export function TourTeaser({ editions }: { editions: Edition[] }) {
         </div>
       ) : (
         <p className="text-sm text-neutral-400">
-          Le calendrier du Tour 2026 sera bientôt annoncé.
+          Fenou TOUR 2027: Surveillez les nuages, le calendrier vient.
         </p>
       )}
       <Link
-        href="/tour-2026"
+        href="/tour-2027"
         className="mt-10 inline-block text-xs font-semibold uppercase tracking-caps text-neutral-900 underline underline-offset-4 hover:text-brand-orange"
       >
         Voir toutes les étapes →

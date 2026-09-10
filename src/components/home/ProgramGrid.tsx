@@ -38,11 +38,11 @@ export type ProgramActivity = {
 
 export const DEFAULT_ACTIVITIES: ProgramActivity[] = [
   {
-    title: "Marché Fenou",
+    title: "Fenou HIGBE",
     description:
       "+150 entrepreneurs africains, +2 000 produits uniques, dégustations gratuites — les saveurs authentiques du Bénin et d'ailleurs.",
     caption: "Tous les jours · Place de l'Amazone",
-    image: "/images/marche-fenou.jpg",
+    image: "/images/neon-fenou.jpg",
   },
   {
     title: "Caravane des Entrepreneurs",

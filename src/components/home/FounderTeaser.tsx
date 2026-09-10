@@ -1,7 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PlaceholderImage } from "@/components/PlaceholderImage";
 import { Reveal } from "@/components/motion/Reveal";
+
+// TODO(assets): remplaçable depuis /admin/contenu/home → Teaser fondatrice
+// → Portrait, qui prend toujours le dessus sur cette valeur par défaut.
+const DEFAULT_IMAGE = "/images/sonita-tossou-portrait.jpg";
 
 type FounderTeaserProps = {
   quote?: string;
@@ -12,21 +15,14 @@ type FounderTeaserProps = {
 export function FounderTeaser({ quote, bio, image }: FounderTeaserProps) {
   return (
     <Reveal className="grid items-center gap-10 sm:grid-cols-[minmax(0,320px)_1fr]">
-      {image ? (
-        <Image
-          src={image}
-          alt="Portrait de Sonita Tossou, fondatrice du Fenou Higbé"
-          width={320}
-          height={427}
-          className="h-auto w-full object-cover"
-          style={{ aspectRatio: "3/4" }}
-        />
-      ) : (
-        <PlaceholderImage
-          description="Portrait de Sonita Tossou, fondatrice du Fenou Higbé"
-          aspectRatio="3/4"
-        />
-      )}
+      <Image
+        src={image || DEFAULT_IMAGE}
+        alt="Portrait de Sonita Tossou, fondatrice du Fenou Higbé"
+        width={320}
+        height={427}
+        className="h-auto w-full object-cover"
+        style={{ aspectRatio: "3/4" }}
+      />
       <div>
         <p className="text-xs font-semibold uppercase tracking-caps text-brand-orange">
           La fondatrice
@@ -39,7 +35,7 @@ export function FounderTeaser({ quote, bio, image }: FounderTeaserProps) {
         </blockquote>
         <p className="mt-4 text-neutral-600">
           {bio ||
-            "Sonita Tossou, entrepreneure béninoise, fondatrice de Fenou Foods, Fenou Packaging et du Fenou Higbé."}
+            "Sonita Tossou, entrepreneure béninoise, fondatrice de Fenou Industries,Fenou Foods & Packaging et du Fenou Higbé."}
         </p>
         <Link
           href="/initiatives"
