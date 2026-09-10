@@ -385,31 +385,18 @@ export default async function AccueilPage() {
             </HeroIntroItem>
           )}
           <div className="max-w-2xl">
-            <HeroIntroItem>
-              <p className="text-xs font-semibold uppercase tracking-caps text-white/60">
-                {pick(
-                  hero,
-                  "eyebrow",
-                  "Marché international des jeunes entrepreneurs africains",
-                )}
-              </p>
+            <HeroIntroItem>  
+              <Reveal delay={0.3} className="mx-auto w-full max-w-[500px] lg:mx-0">
+              <Image
+                src="/logo/fenou-higbe-white.png"
+                alt="Commentaires de visiteurs sur les réseaux sociaux, saluant l'organisation et l'ambiance du Fenou Higbé"
+                width={900}
+                height={1100}
+                className="h-auto w-full"
+              />
+            </Reveal>
             </HeroIntroItem>
-            <HeroIntroItem>
-              <h1 className="mt-4 font-display text-6xl font-normal leading-[0.95] sm:text-8xl">
-                Fenou
-                <br />
-                <span className="italic text-brand-yellow">HIGBÉ</span>
-              </h1>
-            </HeroIntroItem>
-            <HeroIntroItem>
-              <p className="mt-7 max-w-xl text-lg text-white/80">
-                {pick(
-                  hero,
-                  "subtitle",
-                  "Un mouvement vivant. Une seule ambition : faire du Bénin la capitale de l'entrepreneuriat africain.",
-                )}
-              </p>
-            </HeroIntroItem>
+
             <HeroIntroItem className="mt-8 flex flex-wrap gap-4">
               <CtaLink href="/tour-2026" variant="primary">
                 Voir le Tour 2026
