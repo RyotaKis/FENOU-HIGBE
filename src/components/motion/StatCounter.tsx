@@ -1,7 +1,7 @@
 "use client";
 
 import { useInView, useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type StatCounterProps = {
   value: string;
@@ -56,7 +56,10 @@ export function StatCounter({
   const ref = useRef<HTMLParagraphElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-10% 0px" });
   const shouldReduceMotion = useReducedMotion();
-  const parsed = parseStat(value);
+  // Mémoïsé : sinon parseStat(value) recrée un nouvel objet à chaque rendu,
+  // ce qui relance l'effet ci-dessous (donc l'animation) en boucle infinie
+  // puisque `parsed` est dans ses dépendances.
+  const parsed = useMemo(() => parseStat(value), [value]);
   const [display, setDisplay] = useState(
     parsed ? formatNumber(0, parsed) : value,
   );
