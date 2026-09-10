@@ -19,16 +19,16 @@ import { FounderTeaser } from "@/components/home/FounderTeaser";
 const FALLBACK_STATS = [
   { id: "exposants", label: "jeunes exposants accompagnés", valeur: "+500" },
   { id: "femmes", label: "d'exposants féminins", valeur: "+80%" },
-  { id: "visiteurs", label: "visiteurs cumulés", valeur: "+150 000" },
+  { id: "visiteurs", label: "visiteurs cumulés", valeur: "+500 000" },
   { id: "formes", label: "entrepreneurs formés", valeur: "+200" },
   { id: "emplois", label: "emplois temporaires créés", valeur: "+5000" },
   { id: "produits", label: "produits locaux promus", valeur: "+3000" },
-  { id: "villes", label: "villes parcourues", valeur: "4" },
+  { id: "villes", label: "villes parcourues", valeur: "+4" },
 ];
 
 const DEFAULT_CONCEPT_ITEMS = [
   {
-    title: "20 à 30 exposants",
+    title: "Plusieurs exposants",
     text: "Art, agroalimentaire, cosmétique, textile, artisanat, tech...",
   },
   {

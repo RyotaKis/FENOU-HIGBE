@@ -28,10 +28,10 @@ export type ProgramActivity = {
   description: string;
   caption: string;
   /**
-   * Chemin d'image optionnel (ex. "/images/programme/caravane.jpg" — dépose
-   * le fichier dans public/images/programme/). Grande tuile → image de fond
-   * plein cadre avec voile sombre ; tuile normale → vignette au-dessus du
-   * titre. Laisse vide pour garder l'icône générique.
+   * Chemin d'image optionnel (ex. "/images/caravane.jpg" — dépose le
+   * fichier dans public/images/). Grande tuile → image de fond plein cadre
+   * avec voile sombre ; tuile normale → vignette au-dessus du titre. Laisse
+   * vide pour garder l'icône générique.
    */
   image?: string;
 };
@@ -42,42 +42,42 @@ export const DEFAULT_ACTIVITIES: ProgramActivity[] = [
     description:
       "+150 entrepreneurs africains, +2 000 produits uniques, dégustations gratuites — les saveurs authentiques du Bénin et d'ailleurs.",
     caption: "Tous les jours · Place de l'Amazone",
-    // image: "/images/programme/marche-fenou.jpg",
+    image: "/images/marche-fenou.jpg",
   },
   {
     title: "Caravane des Entrepreneurs",
     description:
       "Le coup d'envoi festif : une caravane parcourt la ville, entrepreneurs et produits en tête.",
     caption: "27 Oct · Cotonou",
-    // image: "/images/programme/caravane.jpg",
+    image: "/images/caravane.jpg",
   },
   {
     title: "Fenou Startup Challenge",
     description:
       "Pitch, mentorat, opportunités de financement — 3 projets primés à l'issue du concours.",
     caption: "29 Oct · Grande scène",
-    // image: "/images/programme/startup-challenge.jpg",
+    image: "/images/startup-challenge.jpg",
   },
   {
     title: "African Food Challenge",
     description:
       "Un concours culinaire qui valorise la gastronomie africaine et les produits locaux, jugé par des experts.",
     caption: "30 Oct · Espace dégustation",
-    // image: "/images/programme/food-challenge.jpg",
+    image: "/images/food-challenge.jpg",
   },
   {
     title: "Prestations d'artistes",
     description:
       "Musique, danse et performances — artistes béninois de renom et talents internationaux.",
     caption: "Chaque soir · Grand podium",
-    // image: "/images/programme/artistes.jpg",
+    image: "/images/prestation-artiste.jpg",
   },
   {
     title: "Fenou Xwé",
     description:
       "La grande soirée de clôture, festive et immersive, célébrant l'identité béninoise à travers traditions, gastronomie et culture.",
     caption: "1er Nov · Soirée de clôture",
-    // image: "/images/programme/fenou-xwe.jpg",
+    image: "/images/fenou-xwe-photo.jpg",
   },
 ];
 
