@@ -91,9 +91,6 @@ export default async function AccueilPage() {
   const chapters: Record<ChapterKey, React.ReactNode> = {
     manifeste: (
       <ChapterSection tone="dark" className="text-center">
-        <p className="text-xs font-semibold uppercase tracking-caps text-brand-yellow">
-          Manifeste
-        </p>
         <Reveal delay={0.1}>
           {manifeste?.quote ? (
             <blockquote className="mx-auto mt-6 max-w-4xl font-display text-3xl leading-tight sm:text-5xl">
@@ -101,9 +98,8 @@ export default async function AccueilPage() {
             </blockquote>
           ) : (
             <blockquote className="mx-auto mt-6 max-w-4xl font-display text-3xl leading-tight sm:text-5xl">
-              &laquo; Ce n&apos;est pas un événement. C&apos;est un{" "}
-              <span className="italic text-brand-yellow">mouvement</span>.
-              Chaque ville est une scène. Chaque entrepreneur, un acte. &raquo;
+              &laquo; Ce n&apos;est pas un simple événement. C&apos;est un{" "}
+              <span className="italic text-brand-yellow">mouvement</span>. &raquo;
             </blockquote>
           )}
         </Reveal>
@@ -153,11 +149,11 @@ export default async function AccueilPage() {
           </Reveal>
           <div>
             <SectionHeading
-              eyebrow={pick(pourquoiProjet, "eyebrow", "Pourquoi ce projet ?")}
+              eyebrow={pick(pourquoiProjet, "eyebrow", "Pourquoi ce projet ? Pourquoi Fenou HIGBE ?")}
               title={pick(
                 pourquoiProjet,
                 "title",
-                "Un espace concret pour exister, vendre, apprendre — et rêver plus grand",
+                "Créer un espace concret pour exister, vendre, apprendre — et rêver plus grand",
               )}
               intro={pick(
                 pourquoiProjet,
@@ -261,7 +257,7 @@ export default async function AccueilPage() {
             {impactQuote?.quote || (
               <>
                 &laquo; Ici, les jeunes entrepreneurs béninois ne rêvent pas —{" "}
-                <span className="not-italic">ils vendent</span>. &raquo;
+                <span className="not-italic">ils vendent, apprennent et tissent des liens</span>. &raquo;
               </>
             )}
           </blockquote>
@@ -288,27 +284,14 @@ export default async function AccueilPage() {
                 </Reveal>
               ))}
             </ul>
-            <Reveal
-              delay={0.3}
-              className="h-fit border border-neutral-900/10 bg-white p-6 shadow-warm-sm"
-            >
-              <p className="font-display text-2xl italic text-neutral-800">
-                «{" "}
-                {pick(
-                  impact,
-                  "testimonial_quote",
-                  "meilleure marché de l'année 🙌 j'ai juré",
-                )}{" "}
-                »
-              </p>
-              <p className="mt-3 text-sm text-neutral-400">
-                —{" "}
-                {pick(
-                  impact,
-                  "testimonial_author",
-                  "un visiteur, sur les réseaux sociaux",
-                )}
-              </p>
+            <Reveal delay={0.3} className="h-fit">
+              <Image
+                src="/images/commentaires-visiteurs.png"
+                alt="Commentaires de visiteurs sur les réseaux sociaux, saluant l'organisation et l'ambiance du Fenou Higbé"
+                width={900}
+                height={1100}
+                className="h-auto w-full"
+              />
             </Reveal>
           </div>
         </ChapterSection>
