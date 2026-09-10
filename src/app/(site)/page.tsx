@@ -273,7 +273,7 @@ export default async function AccueilPage() {
               "Des centaines de jeunes trouvent leur premier client, ou leur premier investisseur.",
             )}
           />
-          <div className="mt-12 grid gap-10 lg:grid-cols-[1.3fr_1fr]">
+          <div className="mt-12 grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-center">
             <ul className="columns-1 gap-6 *:mb-6 *:break-inside-avoid sm:columns-2">
               {impactItems.map((item, index) => (
                 <Reveal key={`${item.text}-${index}`} delay={index * 0.06}>
@@ -284,9 +284,9 @@ export default async function AccueilPage() {
                 </Reveal>
               ))}
             </ul>
-            <Reveal delay={0.3} className="h-fit">
+            <Reveal delay={0.3} className="mx-auto w-full max-w-[280px] lg:mx-0">
               <Image
-                src="/images/commentaires-visiteurs.png"
+                src="/images/comm.png"
                 alt="Commentaires de visiteurs sur les réseaux sociaux, saluant l'organisation et l'ambiance du Fenou Higbé"
                 width={900}
                 height={1100}
