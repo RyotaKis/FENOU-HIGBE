@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getSiteLogo } from "@/lib/pageContent";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import { Reveal } from "@/components/motion/Reveal";
+import { SocialLinks } from "@/components/SocialLinks";
 
 const NAV_LINKS = [
   { href: "/", label: "Accueil" },
@@ -12,12 +13,6 @@ const NAV_LINKS = [
   { href: "/exposants", label: "Exposants" },
   { href: "/partenaires", label: "Partenaires" },
   { href: "/contact", label: "Contact" },
-];
-
-const SOCIALS = [
-  { label: "Facebook", href: "#" },
-  { label: "Instagram", href: "#" },
-  { label: "TikTok", href: "#" },
 ];
 
 export async function Footer() {
@@ -35,8 +30,7 @@ export async function Footer() {
             className="h-10 w-auto"
           />
           <p className="mt-4 max-w-sm text-sm text-neutral-400">
-            Le marché qui fait bouger le Bénin, ville après ville. Bientôt sur
-            www.fenouhigbe.com.
+            Le marché des jeunes entrepreneurs africains.
           </p>
         </div>
 
@@ -62,19 +56,7 @@ export async function Footer() {
           <p className="text-xs font-semibold uppercase tracking-caps text-brand-yellow">
             Rejoins la communauté
           </p>
-          <ul className="mt-4 flex gap-4 text-sm">
-            {SOCIALS.map((s) => (
-              <li key={s.label}>
-                <Link
-                  href={s.href}
-                  className="flex h-9 w-9 items-center justify-center border border-white/20 text-xs transition-colors hover:border-brand-yellow hover:text-brand-yellow"
-                  aria-label={s.label}
-                >
-                  {s.label.slice(0, 2)}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <SocialLinks variant="dark" size="md" className="mt-4" />
           <p className="mt-6 text-xs text-neutral-500">
             Promotrice : Sonita Tossou
             <br />
