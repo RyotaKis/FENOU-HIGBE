@@ -8,24 +8,83 @@ import { getPageContent, pick, pickList } from "@/lib/pageContent";
 
 export const metadata: Metadata = { title: "Initiatives & Filiales" };
 
-const DEFAULT_VENTURES = [
+const SOCIALS = [
+  { label: "Facebook", href: "#" },
+  { label: "Instagram", href: "#" },
+  { label: "TikTok", href: "#" },
+];
+
+type Venture = Record<string, string> & {
+  name: string;
+  year: string;
+  description: string;
+  image?: string;
+  darkImage?: string;
+  socials?: string;
+  applyHref?: string;
+};
+
+const DEFAULT_VENTURES: Venture[] = [
   {
-    name: "Fenou Foods",
+    name: "Fenou Foods & Packaging",
     year: "2016",
     description:
-      "La première startup de Sonita Tossou : réinventer la consommation de l'igname avec le couscous d'igname à cuisson express, « Wassa Wassa Tchigan ».",
-  },
-  {
-    name: "Fenou Packaging",
-    year: "",
-    description:
-      "Emballages agroalimentaires biodégradables et distribution de produits locaux 100% naturels — au service de l'environnement et des agriculteurs locaux.",
+      "La première startup de Sonita Tossou : réinventer la consommation de l'igname avec le couscous d'igname à cuisson express, « Wassa Wassa Tchigan ». Aujourd'hui, un acteur majeur de l'agroalimentaire béninois — produits locaux naturels et emballages biodégradables au service de l'environnement et des agriculteurs.",
+    image: "/images/initiatives/initiative-foods-packaging.jpg",
+    socials: "true",
   },
   {
     name: "agripack.store",
     year: "2019",
     description:
       "Une plateforme e-commerce dédiée aux produits locaux, présentée au salon VivaTech à Paris.",
+  },
+  {
+    name: "Afripreneur",
+    year: "",
+    description:
+      "Un programme d'accompagnement et de mise en réseau qui outille les jeunes entrepreneurs africains — formation, mentorat et visibilité au service de leurs projets.",
+  },
+  {
+    name: "Fenou Moments",
+    year: "",
+    description:
+      "La marque médias du Fenou Higbé : captation photo et vidéo des temps forts de chaque édition, partagée avec toute la communauté.",
+    image: "/images/initiatives/initiative-fenou-moments.png",
+    socials: "true",
+  },
+  {
+    name: "Le Gala des Fenouloves",
+    year: "édition 3",
+    description:
+      "La grande soirée de gala qui célèbre les couples et les belles histoires nées au sein de la communauté entrepreneuriale Fenou.",
+    image: "/images/initiatives/initiative-gala-fenouloves.jpg",
+    socials: "true",
+  },
+  {
+    name: "Fenou Startup Challenge",
+    year: "",
+    description:
+      "Le concours qui repère et récompense les startups les plus prometteuses du marché Fenou Higbé.",
+    image: "/images/initiatives/initiative-startup-challenge.png",
+    darkImage: "true",
+    applyHref: "/contact",
+  },
+  {
+    name: "Africa Food Challenge",
+    year: "",
+    description:
+      "Le concours culinaire qui met à l'honneur la gastronomie africaine et ses jeunes chefs.",
+    image: "/images/initiatives/initiative-africa-food-challenge.jpg",
+    applyHref: "/contact",
+  },
+  {
+    name: "Fenou Xwé",
+    year: "",
+    description:
+      "La grande fête de clôture du marché Fenou — concerts, animations et ambiance festive pour clore chaque édition en beauté.",
+    image: "/images/initiatives/initiative-fenou-xwe.png",
+    darkImage: "true",
   },
 ];
 
@@ -72,22 +131,62 @@ export default async function InitiativesPage() {
         )}
       />
 
-      <div className="mt-14 grid gap-6 sm:grid-cols-3">
+      <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {ventures.map((venture, index) => (
           <Reveal key={`${venture.name}-${index}`} delay={index * 0.1}>
             <TiltCard max={6}>
-              <div className="h-full bg-white p-6 shadow-warm-sm transition-shadow duration-300 hover:shadow-warm">
-                <h3 className="font-display text-xl font-semibold">
-                  {venture.name}
-                  {venture.year && (
-                    <span className="ml-2 font-sans text-sm font-normal text-neutral-400">
-                      {venture.year}
-                    </span>
+              <div className="flex h-full flex-col bg-white shadow-warm-sm transition-shadow duration-300 hover:shadow-warm">
+                {venture.image && (
+                  <div
+                    className={`flex h-40 items-center justify-center p-6 ${
+                      venture.darkImage === "true" ? "bg-ink" : "bg-brand-cream"
+                    }`}
+                  >
+                    <Image
+                      src={venture.image}
+                      alt={venture.name}
+                      width={400}
+                      height={280}
+                      className="h-full w-auto object-contain"
+                    />
+                  </div>
+                )}
+                <div className="flex flex-1 flex-col p-6">
+                  <h3 className="font-display text-xl font-semibold">
+                    {venture.name}
+                    {venture.year && (
+                      <span className="ml-2 font-sans text-sm font-normal text-neutral-400">
+                        {venture.year}
+                      </span>
+                    )}
+                  </h3>
+                  <p className="mt-2 text-sm text-neutral-600">
+                    {venture.description}
+                  </p>
+                  {venture.socials === "true" && (
+                    <ul className="mt-4 flex gap-3 text-xs">
+                      {SOCIALS.map((s) => (
+                        <li key={s.label}>
+                          <a
+                            href={s.href}
+                            className="flex h-8 w-8 items-center justify-center border border-neutral-200 text-[10px] font-semibold text-neutral-500 transition-colors hover:border-brand-orange hover:text-brand-orange"
+                            aria-label={s.label}
+                          >
+                            {s.label.slice(0, 2)}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
                   )}
-                </h3>
-                <p className="mt-2 text-sm text-neutral-600">
-                  {venture.description}
-                </p>
+                  {venture.applyHref && (
+                    <a
+                      href={venture.applyHref}
+                      className="mt-4 inline-block w-fit border border-brand-orange px-4 py-2 text-xs font-semibold uppercase tracking-caps text-brand-orange transition-colors hover:bg-brand-orange hover:text-white"
+                    >
+                      Postuler
+                    </a>
+                  )}
+                </div>
               </div>
             </TiltCard>
           </Reveal>
