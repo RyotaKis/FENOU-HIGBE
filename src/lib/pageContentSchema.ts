@@ -134,34 +134,6 @@ export const PAGE_CONTENT_SCHEMA: PageDef[] = [
     ],
   },
   {
-    slug: "exposants",
-    label: "Devenir exposant",
-    sections: [
-      single("hero", "Introduction", heroFields),
-      list("benefits", "Bénéfices exposants", "Bénéfice", [
-        { key: "title", label: "Titre", type: "text" },
-        { key: "text", label: "Texte", type: "textarea" },
-      ]),
-      single("candidature", "Bloc candidature", [
-        { key: "note", label: "Note (conditions)", type: "textarea" },
-      ]),
-    ],
-  },
-  {
-    slug: "partenaires",
-    label: "Partenaires",
-    sections: [
-      single("hero", "Introduction", heroFields),
-      list("support_needs", "Ce que nous recherchons", "Besoin", [
-        { key: "text", label: "Texte", type: "textarea" },
-      ]),
-      single("dossier", "Bloc dossier de partenariat", [
-        { key: "title", label: "Titre", type: "text" },
-        { key: "note", label: "Note", type: "textarea" },
-      ]),
-    ],
-  },
-  {
     slug: "contact",
     label: "Contact",
     sections: [

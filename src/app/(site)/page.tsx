@@ -354,10 +354,10 @@ export default async function AccueilPage() {
           </h2>
         </Reveal>
         <Reveal className="mt-10 flex flex-wrap justify-center gap-4" delay={0.15}>
-          <CtaLink href="/exposants" variant="solid-dark">
+          <CtaLink href="/contact#formulaire" variant="solid-dark">
             Devenir exposant
           </CtaLink>
-          <CtaLink href="/partenaires" variant="outline-dark">
+          <CtaLink href="/contact#formulaire" variant="outline-dark">
             Devenir partenaire
           </CtaLink>
           <CtaLink href="/contact" variant="outline-dark">
@@ -401,7 +401,7 @@ export default async function AccueilPage() {
               <CtaLink href="/tour-2026" variant="primary">
                 Voir le Tour 2026
               </CtaLink>
-              <CtaLink href="/exposants" variant="ghost-dark">
+              <CtaLink href="/contact#formulaire" variant="ghost-dark">
                 Devenir exposant
               </CtaLink>
             </HeroIntroItem>

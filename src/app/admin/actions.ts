@@ -86,14 +86,12 @@ export async function createPartner(formData: FormData) {
     .insert({ nom, logo_url, site_url: site_url || null, actif: true, ordre: 0 });
 
   revalidatePath("/admin/partenaires");
-  revalidatePath("/partenaires");
 }
 
 export async function deletePartner(id: string) {
   const supabase = await requireAdmin();
   await supabase.from("partners").delete().eq("id", id);
   revalidatePath("/admin/partenaires");
-  revalidatePath("/partenaires");
 }
 
 export async function createStat(formData: FormData) {
@@ -107,7 +105,6 @@ export async function createStat(formData: FormData) {
   await supabase.from("stats").insert({ label, valeur, ordre: 0 });
 
   revalidatePath("/admin/chiffres");
-  revalidatePath("/partenaires");
   revalidatePath("/");
 }
 
@@ -115,7 +112,6 @@ export async function deleteStat(id: string) {
   const supabase = await requireAdmin();
   await supabase.from("stats").delete().eq("id", id);
   revalidatePath("/admin/chiffres");
-  revalidatePath("/partenaires");
   revalidatePath("/");
 }
 

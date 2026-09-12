@@ -111,7 +111,11 @@ export default async function ContactPage() {
         <SocialLinks />
       </Reveal>
 
-      <Reveal delay={0.25} className="mt-10 bg-white p-6 shadow-warm-sm sm:p-8">
+      <Reveal
+        delay={0.25}
+        id="formulaire"
+        className="mt-10 scroll-mt-24 bg-white p-6 shadow-warm-sm sm:p-8"
+      >
         <h2 className="font-display text-xl font-semibold">Envoyer un message</h2>
         <div className="mt-6">
           <ContactForm />
