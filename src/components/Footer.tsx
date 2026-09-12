@@ -10,8 +10,6 @@ const NAV_LINKS = [
   { href: "/tour-2026", label: "Tour 2026" },
   { href: "/galerie", label: "Galerie" },
   { href: "/initiatives", label: "Initiatives" },
-  { href: "/exposants", label: "Exposants" },
-  { href: "/partenaires", label: "Partenaires" },
   { href: "/contact", label: "Contact" },
 ];
 
