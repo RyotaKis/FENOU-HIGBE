@@ -11,6 +11,7 @@ function getUpcomingEditions(editions: Edition[]) {
       isCurrent:
         now >= new Date(edition.date_debut).getTime() &&
         now <= new Date(edition.date_fin).getTime(),
+      isFlagship: /grand fenou higb/i.test(edition.description ?? ""),
     }))
     .slice(0, 4);
 }
@@ -45,7 +46,19 @@ export function TourTeaser({ editions }: { editions: Edition[] }) {
                     <p className="mt-1 font-display text-xl font-semibold">
                       {edition.ville}
                     </p>
-                    <p className={`mt-1 text-sm ${isCurrent ? "text-neutral-950/70" : "text-neutral-500"}`}>
+                    <p
+                      className={`mt-1 text-sm font-semibold ${
+                        isCurrent ? "text-neutral-950/70" : "text-brand-yellow"
+                      } ${edition.isFlagship && !isCurrent ? "animate-pulse" : ""}`}
+                      style={
+                        edition.isFlagship && !isCurrent
+                          ? {
+                              textShadow:
+                                "0 0 8px var(--color-brand-yellow), 0 0 20px var(--color-brand-yellow)",
+                            }
+                          : undefined
+                      }
+                    >
                       {new Date(edition.date_debut).toLocaleDateString("fr-FR", {
                         day: "2-digit",
                         month: "long",
