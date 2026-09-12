@@ -2,15 +2,28 @@ import Link from "next/link";
 import type { Edition } from "@/lib/types";
 import { Reveal } from "@/components/motion/Reveal";
 
+function getUpcomingEditions(editions: Edition[]) {
+  const now = Date.now();
+  return editions
+    .filter((edition) => new Date(edition.date_fin).getTime() >= now)
+    .map((edition) => ({
+      ...edition,
+      isCurrent:
+        now >= new Date(edition.date_debut).getTime() &&
+        now <= new Date(edition.date_fin).getTime(),
+    }))
+    .slice(0, 4);
+}
+
 export function TourTeaser({ editions }: { editions: Edition[] }) {
-  const upcoming = editions.slice(0, 4);
+  const upcoming = getUpcomingEditions(editions);
 
   return (
     <div className="mt-14">
       {upcoming.length > 0 ? (
         <div className="grid divide-y divide-neutral-200 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
           {upcoming.map((edition, index) => {
-            const isCurrent = edition.statut === "en_cours";
+            const isCurrent = edition.isCurrent;
             return (
               <Reveal key={edition.id} delay={index * 0.08} className="h-full">
                 <div
