@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Fragment } from "react";
-import { getNextEdition, getAllEditions } from "@/lib/editions";
+import { getAllEditions } from "@/lib/editions";
 import { getKeyStats } from "@/lib/content";
 import { getPageContent, getHomeLayout, pick, pickList } from "@/lib/pageContent";
 import type { ChapterKey } from "@/lib/homeLayout";
@@ -63,8 +63,7 @@ const DEFAULT_IMPACT_ITEMS = [
 ];
 
 export default async function AccueilPage() {
-  const [nextEdition, editions, stats, content, layout] = await Promise.all([
-    getNextEdition(),
+  const [editions, stats, content, layout] = await Promise.all([
     getAllEditions(),
     getKeyStats(),
     getPageContent("home"),
@@ -376,14 +375,6 @@ export default async function AccueilPage() {
       <section className="relative flex min-h-dvh flex-col items-start justify-end overflow-hidden px-6 pb-20 pt-32 text-white sm:px-10">
         <HeroMedia overrideImage={hero?.image} />
         <HeroIntro>
-          {nextEdition && (
-            <HeroIntroItem className="absolute right-6 top-28 hidden sm:right-10 sm:block">
-              <span className="flex items-center gap-2 border border-white/25 bg-black/30 px-4 py-2 text-[10px] font-semibold uppercase tracking-caps backdrop-blur">
-                <span className="h-1.5 w-1.5 rounded-full bg-brand-orange" />
-                En cours · {nextEdition.ville}
-              </span>
-            </HeroIntroItem>
-          )}
           <div className="max-w-2xl">
             <HeroIntroItem>  
               <Reveal delay={0.3} className="mx-auto w-full max-w-[500px] lg:mx-0">
