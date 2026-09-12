@@ -3,11 +3,11 @@ import Image from "next/image";
 import { FaSeedling, FaStore } from "react-icons/fa";
 import type { IconType } from "react-icons";
 import { SectionHeading } from "@/components/SectionHeading";
-import { PlaceholderImage } from "@/components/PlaceholderImage";
 import { SocialLinks } from "@/components/SocialLinks";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { getPageContent, pick, pickList } from "@/lib/pageContent";
+import { SOCIALS_BY_VENTURE } from "@/lib/socialLinks";
 
 export const metadata: Metadata = { title: "Initiatives & Filiales" };
 
@@ -18,7 +18,6 @@ type Venture = Record<string, string> & {
   category: "marque" | "concours" | "autre";
   image?: string;
   darkImage?: string;
-  socials?: string;
   applyHref?: string;
 };
 
@@ -30,7 +29,6 @@ const DEFAULT_VENTURES: Venture[] = [
     description:
       "La première startup de Sonita Tossou : réinventer la consommation de l'igname avec le couscous d'igname à cuisson express, « Wassa Wassa Tchigan ». Aujourd'hui, un acteur majeur de l'agroalimentaire béninois — produits locaux naturels et emballages biodégradables au service de l'environnement et des agriculteurs.",
     image: "/images/initiatives/initiative-foods-packaging.jpg",
-    socials: "true",
   },
   {
     name: "Fenou Moments",
@@ -39,7 +37,6 @@ const DEFAULT_VENTURES: Venture[] = [
     description:
       "La marque médias du Fenou Higbé : captation photo et vidéo des temps forts de chaque édition, partagée avec toute la communauté.",
     image: "/images/initiatives/initiative-fenou-moments.png",
-    socials: "true",
   },
   {
     name: "Le Gala des Fenouloves",
@@ -47,8 +44,7 @@ const DEFAULT_VENTURES: Venture[] = [
     category: "marque",
     description:
       "La grande soirée de gala qui célèbre les couples et les belles histoires nées au sein de la communauté entrepreneuriale Fenou.",
-    image: "/images/initiatives/initiative-gala-fenouloves.jpg",
-    socials: "true",
+    image: "/images/initiatives/gala-fenouloves-v2.png",
   },
   {
     name: "Fenou Startup Challenge",
@@ -99,31 +95,9 @@ const AUTRE_ICONS: Record<string, IconType> = {
   Afripreneur: FaSeedling,
 };
 
-const DEFAULT_MILESTONES = [
-  { year: "2016", text: "Diplômée en pharmacologie, fonde Fenou Foods à Cotonou." },
-  {
-    year: "2018",
-    text: "Prix du PitchAgrihack (Banque Africaine de Développement, Rwanda) et Prix de la Meilleure Startup Francophone dirigée par une femme (SUGUBA AFRICA, Kigali).",
-  },
-  {
-    year: "2018",
-    text: "Prix AgriStartupSummit (Paris) et 1er prix du concours GET IN THE RING.",
-  },
-  {
-    year: "2019",
-    text: "1er Prix d'Innovation de la GIZ SNRD à Abidjan. Participation au salon VivaTech à Paris.",
-  },
-  {
-    year: "2021",
-    text: "Grand Prix BJKD, organisé par la fondation Bénédicte Janine Kacou Diagou. Invitée au Sommet Afrique-France pour partager son expertise.",
-  },
-  {
-    year: "2022",
-    text: "Fonde le FENOU HIGBÉ, le marché international des jeunes entrepreneurs africains.",
-  },
-];
 
 function VentureCard({ venture, delay }: { venture: Venture; delay: number }) {
+  const socials = SOCIALS_BY_VENTURE[venture.name];
   return (
     <Reveal delay={delay}>
       <TiltCard max={6}>
@@ -151,7 +125,7 @@ function VentureCard({ venture, delay }: { venture: Venture; delay: number }) {
               )}
             </h3>
             <p className="mt-2 flex-1 text-sm text-neutral-600">{venture.description}</p>
-            {venture.socials === "true" && <SocialLinks className="mt-4" />}
+            {socials && <SocialLinks links={socials} className="mt-4" />}
             {venture.applyHref && (
               <a
                 href={venture.applyHref}
@@ -196,7 +170,7 @@ export default async function InitiativesPage() {
   const hero = content.hero;
   const bio = content.bio;
   const ventures = pickList(content, "ventures", DEFAULT_VENTURES);
-  const milestones = pickList(content, "milestones", DEFAULT_MILESTONES);
+ 
 
   const marques = ventures.filter((v) => v.category === "marque");
   const concours = ventures.filter((v) => v.category === "concours");
@@ -253,57 +227,6 @@ export default async function InitiativesPage() {
         </section>
       )}
 
-      <div className="mt-24 grid gap-10 sm:grid-cols-[minmax(0,280px)_1fr]">
-        <Reveal>
-          {bio?.image ? (
-            <Image
-              src={bio.image}
-              alt="Portrait de Sonita Tossou"
-              width={280}
-              height={373}
-              className="h-auto w-full object-cover"
-              style={{ aspectRatio: "3/4" }}
-            />
-          ) : (
-            <PlaceholderImage
-              description="Portrait de Sonita Tossou en tenue traditionnelle"
-              aspectRatio="3/4"
-            />
-          )}
-        </Reveal>
-        <div>
-          <SectionHeading
-            eyebrow={pick(bio, "eyebrow", "Biographie")}
-            title={pick(bio, "title", "Sonita Tossou")}
-            intro={pick(
-              bio,
-              "intro",
-              "Une entrepreneure engagée au service de l'Afrique qui entreprend. Née à Cotonou dans un foyer imprégné du commerce, elle a rapidement embrassé l'esprit entrepreneurial qui caractérise sa famille.",
-            )}
-          />
-          <ol className="mt-8 space-y-6 border-l border-neutral-200 pl-6">
-            {milestones.map((milestone, index) => (
-              <Reveal key={`${milestone.year}-${index}`} delay={index * 0.08}>
-                <li>
-                  <p className="text-sm font-semibold text-brand-orange">
-                    {milestone.year}
-                  </p>
-                  <p className="mt-1 text-neutral-600">{milestone.text}</p>
-                </li>
-              </Reveal>
-            ))}
-          </ol>
-          <Reveal delay={0.2} className="mt-8">
-            <p className="text-sm text-neutral-500">
-              {pick(
-                bio,
-                "footer_text",
-                "Avec plus de 500 000 abonnés, Sonita Tossou est aujourd'hui une voix influente sur l'entrepreneuriat africain, qu'elle partage au fil de ses conseils, ses idées et ses histoires inspirantes.",
-              )}
-            </p>
-          </Reveal>
-        </div>
-      </div>
     </div>
   );
 }

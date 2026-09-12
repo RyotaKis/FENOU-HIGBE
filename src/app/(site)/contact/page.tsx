@@ -4,6 +4,7 @@ import type { IconType } from "react-icons";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { SectionHeading } from "@/components/SectionHeading";
 import { SocialLinks } from "@/components/SocialLinks";
+import { FENOU_HIGBE_SOCIALS } from "@/lib/socialLinks";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { getPageContent, pick } from "@/lib/pageContent";
@@ -47,7 +48,7 @@ export default async function ContactPage() {
   const hero = content.hero;
   const coordonnees = content.coordonnees;
 
-  const telephone = pick(coordonnees, "telephone", "+229 01 9735 1639 · 01 9627 1395");
+  const telephone = pick(coordonnees, "telephone", "+229 01 9735 1639 · +229 01 9627 1395");
   const email = pick(coordonnees, "email", "packaging.fenou@gmail.com");
   const numeros = telephone.split("·").map((n) => n.trim());
 
@@ -59,7 +60,7 @@ export default async function ContactPage() {
         intro={pick(
           hero,
           "intro",
-          "Écris-nous, on te répond au plus vite — ou passe directement par WhatsApp.",
+          "Écris-nous, on te répond au plus vite.",
         )}
       />
 
@@ -108,7 +109,7 @@ export default async function ContactPage() {
             <FaEnvelope className="text-brand-orange" /> {email}
           </a>
         </div>
-        <SocialLinks />
+        <SocialLinks links={FENOU_HIGBE_SOCIALS} />
       </Reveal>
 
       <Reveal

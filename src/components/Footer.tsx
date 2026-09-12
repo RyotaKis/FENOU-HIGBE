@@ -4,6 +4,7 @@ import { getSiteLogo } from "@/lib/pageContent";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import { Reveal } from "@/components/motion/Reveal";
 import { SocialLinks } from "@/components/SocialLinks";
+import { FENOU_HIGBE_SOCIALS } from "@/lib/socialLinks";
 
 const NAV_LINKS = [
   { href: "/", label: "Accueil" },
@@ -54,7 +55,12 @@ export async function Footer() {
           <p className="text-xs font-semibold uppercase tracking-caps text-brand-yellow">
             Rejoins la communauté
           </p>
-          <SocialLinks variant="dark" size="md" className="mt-4" />
+          <SocialLinks
+            links={FENOU_HIGBE_SOCIALS}
+            variant="dark"
+            size="md"
+            className="mt-4"
+          />
           <p className="mt-6 text-xs text-neutral-500">
             Promotrice : Sonita Tossou
             <br />

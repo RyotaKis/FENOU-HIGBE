@@ -1,25 +1,41 @@
-import { FaFacebookF, FaInstagram, FaTiktok } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaTiktok,
+  FaWhatsapp,
+  FaYoutube,
+} from "react-icons/fa";
 import type { IconType } from "react-icons";
+import type { SocialLink, SocialPlatform } from "@/lib/socialLinks";
 
-export const SOCIALS = [
-  { label: "Facebook", href: "#" },
-  { label: "Instagram", href: "#" },
-  { label: "TikTok", href: "#" },
-];
+const ICONS: Record<SocialPlatform, IconType> = {
+  facebook: FaFacebookF,
+  instagram: FaInstagram,
+  tiktok: FaTiktok,
+  whatsapp: FaWhatsapp,
+  youtube: FaYoutube,
+  linkedin: FaLinkedinIn,
+};
 
-const ICONS: Record<string, IconType> = {
-  Facebook: FaFacebookF,
-  Instagram: FaInstagram,
-  TikTok: FaTiktok,
+const LABELS: Record<SocialPlatform, string> = {
+  facebook: "Facebook",
+  instagram: "Instagram",
+  tiktok: "TikTok",
+  whatsapp: "WhatsApp",
+  youtube: "YouTube",
+  linkedin: "LinkedIn",
 };
 
 type SocialLinksProps = {
+  links: SocialLink[];
   variant?: "light" | "dark";
   size?: "sm" | "md";
   className?: string;
 };
 
 export function SocialLinks({
+  links,
   variant = "light",
   size = "sm",
   className,
@@ -32,13 +48,15 @@ export function SocialLinks({
 
   return (
     <ul className={`flex gap-3 ${className ?? ""}`}>
-      {SOCIALS.map((s) => {
-        const Icon = ICONS[s.label];
+      {links.map((link) => {
+        const Icon = ICONS[link.platform];
         return (
-          <li key={s.label}>
+          <li key={link.platform}>
             <a
-              href={s.href}
-              aria-label={s.label}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={LABELS[link.platform]}
               className={`flex items-center justify-center border transition-colors ${dim} ${style}`}
             >
               <Icon />
