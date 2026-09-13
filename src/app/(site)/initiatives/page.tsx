@@ -63,7 +63,7 @@ const DEFAULT_VENTURES: Venture[] = [
     description:
       "Le concours culinaire qui met à l'honneur la gastronomie africaine et ses jeunes chefs.",
     image: "/images/initiatives/initiative-africa-food-challenge.jpg",
-    applyHref: "/contact",
+    applyHref: "https://forms.gle/MrbUT4UezGFQQhQS7",
   },
   {
     name: "Fenou Xwé",
@@ -129,6 +129,8 @@ function VentureCard({ venture, delay }: { venture: Venture; delay: number }) {
             {venture.applyHref && (
               <a
                 href={venture.applyHref}
+                target={venture.applyHref.startsWith("http") ? "_blank" : undefined}
+                rel={venture.applyHref.startsWith("http") ? "noopener noreferrer" : undefined}
                 className="mt-4 inline-block w-fit border border-brand-orange px-4 py-2 text-xs font-semibold uppercase tracking-caps text-brand-orange transition-colors hover:bg-brand-orange hover:text-white"
               >
                 Postuler
@@ -184,7 +186,7 @@ export default async function InitiativesPage() {
         intro={pick(
           hero,
           "intro",
-          "Le FENOU HIGBÉ n'est qu'une des initiatives portées par Sonita Tossou, entrepreneure béninoise engagée au service d'une Afrique qui entreprend.",
+          "Le FENOU HIGBÉ n'est qu'une des initiatives portées par notre équipe engagée au service d'une Afrique qui entreprend.",
         )}
       />
 
