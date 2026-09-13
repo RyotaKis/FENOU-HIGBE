@@ -5,7 +5,8 @@ export default async function AdminNewsletterPage() {
   const { data: subscribers } = await supabase
     .from("newsletter_subscribers")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(5000);
 
   const csv = ["email"]
     .concat((subscribers ?? []).map((s) => s.email))

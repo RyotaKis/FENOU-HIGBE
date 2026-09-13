@@ -10,12 +10,14 @@ export function NewsletterForm() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("loading");
-    const email = new FormData(event.currentTarget).get("email");
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email");
+    const site_web = formData.get("site_web");
 
     try {
       const res = await fetch("/api/newsletter", {
         method: "POST",
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, site_web }),
         headers: { "Content-Type": "application/json" },
       });
       if (!res.ok) throw new Error("request failed");
@@ -32,6 +34,14 @@ export function NewsletterForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex w-full max-w-xs flex-col gap-2 text-sm">
+      <input
+        type="text"
+        name="site_web"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute left-[-9999px] h-0 w-0 opacity-0"
+      />
       <label htmlFor="newsletter-email">Newsletter</label>
       <div className="flex gap-2">
         <input

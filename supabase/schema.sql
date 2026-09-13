@@ -61,16 +61,6 @@ create table page_content (
 -- Formulaires publics (écriture publique insert-only, lecture admin uniquement)
 -- ─────────────────────────────────────────────────────────────────────────
 
-create table applicants (
-  id uuid primary key default gen_random_uuid(),
-  nom text not null,
-  email text not null,
-  telephone text,
-  activite text not null,
-  message text not null,
-  created_at timestamptz not null default now()
-);
-
 create table contact_messages (
   id uuid primary key default gen_random_uuid(),
   nom text not null,
@@ -85,14 +75,15 @@ create table newsletter_subscribers (
   created_at timestamptz not null default now()
 );
 
-create table partnership_requests (
+-- Compteur de requêtes anonymes (rate-limit léger, sans dépendance externe).
+-- `key` combine route + IP (ex. "contact:203.0.113.5") ; les lignes sont
+-- jetables, aucune donnée personnelle identifiable au-delà de l'IP.
+create table rate_limits (
   id uuid primary key default gen_random_uuid(),
-  organisation text not null,
-  nom text not null,
-  email text not null,
-  message text,
+  key text not null,
   created_at timestamptz not null default now()
 );
+create index rate_limits_key_created_idx on rate_limits (key, created_at);
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- RLS : activer sur toutes les tables
@@ -103,10 +94,9 @@ alter table edition_photos enable row level security;
 alter table partners enable row level security;
 alter table stats enable row level security;
 alter table page_content enable row level security;
-alter table applicants enable row level security;
 alter table contact_messages enable row level security;
 alter table newsletter_subscribers enable row level security;
-alter table partnership_requests enable row level security;
+alter table rate_limits enable row level security;
 
 -- Lecture publique du contenu du site
 create policy "public read editions" on editions for select using (true);
@@ -123,20 +113,21 @@ create policy "admin write stats" on stats for all using (auth.role() = 'authent
 create policy "admin write page_content" on page_content for all using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
 -- Formulaires publics : insertion anonyme autorisée, lecture réservée à l'admin
-create policy "public insert applicants" on applicants for insert with check (true);
-create policy "admin read applicants" on applicants for select using (auth.role() = 'authenticated');
-create policy "admin delete applicants" on applicants for delete using (auth.role() = 'authenticated');
-
 create policy "public insert contact_messages" on contact_messages for insert with check (true);
 create policy "admin read contact_messages" on contact_messages for select using (auth.role() = 'authenticated');
 create policy "admin delete contact_messages" on contact_messages for delete using (auth.role() = 'authenticated');
 
-create policy "public upsert newsletter_subscribers" on newsletter_subscribers for insert with check (true);
-create policy "public update own newsletter_subscribers" on newsletter_subscribers for update using (true) with check (true);
+-- Insert-only : l'upsert applicatif utilise `ignoreDuplicates` (INSERT ...
+-- ON CONFLICT DO NOTHING), qui ne nécessite pas de policy UPDATE — inutile
+-- d'autoriser qui que ce soit à modifier une ligne existante.
+create policy "public insert newsletter_subscribers" on newsletter_subscribers for insert with check (true);
 create policy "admin read newsletter_subscribers" on newsletter_subscribers for select using (auth.role() = 'authenticated');
 
-create policy "public insert partnership_requests" on partnership_requests for insert with check (true);
-create policy "admin read partnership_requests" on partnership_requests for select using (auth.role() = 'authenticated');
+-- rate_limits : lecture/écriture anonymes nécessaires (vérifiées avant
+-- chaque insertion publique dans les tables ci-dessus), aucune donnée
+-- sensible au-delà d'une IP et d'un horodatage.
+create policy "public insert rate_limits" on rate_limits for insert with check (true);
+create policy "public read rate_limits" on rate_limits for select using (true);
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- Storage : bucket public pour les images gérées depuis le panel admin
@@ -158,3 +149,14 @@ create policy "admin update site-content" on storage.objects
 
 create policy "admin delete site-content" on storage.objects
   for delete using (bucket_id = 'site-content' and auth.role() = 'authenticated');
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Migration manuelle — à exécuter une fois sur le projet Supabase existant.
+-- `applicants` et `partnership_requests` n'ont plus aucune route ni page
+-- admin qui les utilisent (formulaires "Devenir exposant"/"Devenir
+-- partenaire" remplacés par WhatsApp + le formulaire de contact). Non
+-- exécuté automatiquement : vérifie qu'aucune donnée à conserver ne s'y
+-- trouve avant de lancer ces DROP.
+-- ─────────────────────────────────────────────────────────────────────────
+-- drop table if exists applicants;
+-- drop table if exists partnership_requests;

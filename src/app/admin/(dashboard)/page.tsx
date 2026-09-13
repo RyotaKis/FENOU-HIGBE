@@ -9,19 +9,16 @@ async function count(table: string) {
 }
 
 export default async function AdminOverviewPage() {
-  const [editions, partners, applicants, messages, subscribers] =
-    await Promise.all([
-      count("editions"),
-      count("partners"),
-      count("applicants"),
-      count("contact_messages"),
-      count("newsletter_subscribers"),
-    ]);
+  const [editions, partners, messages, subscribers] = await Promise.all([
+    count("editions"),
+    count("partners"),
+    count("contact_messages"),
+    count("newsletter_subscribers"),
+  ]);
 
   const tiles = [
     { label: "Éditions", value: editions },
     { label: "Partenaires", value: partners },
-    { label: "Candidatures", value: applicants },
     { label: "Messages", value: messages },
     { label: "Abonnés newsletter", value: subscribers },
   ];

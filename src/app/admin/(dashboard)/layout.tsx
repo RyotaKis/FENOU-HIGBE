@@ -24,7 +24,6 @@ const NAV_GROUPS = [
   {
     label: "Activité",
     items: [
-      { href: "/admin/candidatures", label: "Candidatures exposants" },
       { href: "/admin/messages", label: "Messages de contact" },
       { href: "/admin/newsletter", label: "Newsletter" },
     ],
