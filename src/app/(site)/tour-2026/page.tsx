@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getAllEditions } from "@/lib/editions";
 import type { Edition, EditionStatus } from "@/lib/types";
 import { SectionHeading } from "@/components/SectionHeading";
+import { PageBackdrop } from "@/components/PageBackdrop";
+import { TimelineProgress } from "@/components/TimelineProgress";
 import { Reveal } from "@/components/motion/Reveal";
 import { getPageContent, pick } from "@/lib/pageContent";
 
@@ -92,16 +94,6 @@ const FALLBACK_EDITIONS: Edition[] = [
     ordre: 6,
   },
   {
-    id: "fallback-azove",
-    ville: "Azovè",
-    date_debut: "2026-09-03",
-    date_fin: "2026-09-06",
-    statut: deriveStatus("2026-09-03", "2026-09-06"),
-    cover_image_url: null,
-    description: null,
-    ordre: 7,
-  },
-  {
     id: "fallback-grand-fenou-higbe",
     ville: "Cotonou — Place de l'Amazone",
     date_debut: "2026-10-27",
@@ -110,7 +102,7 @@ const FALLBACK_EDITIONS: Edition[] = [
     cover_image_url: null,
     description:
       "Grand Fenou Higbé, 4ème édition — le rendez-vous phare de l'année.",
-    ordre: 8,
+    ordre: 7,
   },
   {
     id: "fallback-marche-noel",
@@ -120,7 +112,7 @@ const FALLBACK_EDITIONS: Edition[] = [
     statut: deriveStatus("2026-12-22", "2026-12-25"),
     cover_image_url: null,
     description: "Le Marché de Noël, 3ème édition.",
-    ordre: 9,
+    ordre: 8,
   },
 ];
 
@@ -138,18 +130,20 @@ export default async function Tour2026Page() {
   const hero = content.hero;
 
   return (
+    <PageBackdrop tone="yellow">
     <div className="mx-auto max-w-4xl px-6 py-20 sm:px-10">
       <SectionHeading
-        eyebrow={pick(hero, "eyebrow", "Itinérant")}
+        eyebrow={pick(hero, "eyebrow", "Fenou Higbé")}
         title={pick(hero, "title", "Tour 2026")}
         intro={pick(
           hero,
           "intro",
-          "Le Fenou Higbé voyage à travers le Bénin. Chaque dernier week-end du mois, une nouvelle ville, une nouvelle édition — jusqu'au Grand Fenou Higbé et au Marché de Noël.",
+          "Le Fenou Higbé voyage à travers le Bénin. Chaque mois, une nouvelle ville, une nouvelle édition — jusqu'au Grand Fenou Higbé et au Marché de Noël.",
         )}
       />
 
-      <ol className="relative mt-16 space-y-10 border-l border-neutral-200 pl-8">
+      <TimelineProgress>
+      <ol className="relative mt-16 space-y-10 pl-8">
         {editions.map((edition, index) => {
           const isFlagship = FLAGSHIP_IDS.has(edition.id);
           return (
@@ -200,6 +194,8 @@ export default async function Tour2026Page() {
           );
         })}
       </ol>
+      </TimelineProgress>
     </div>
+    </PageBackdrop>
   );
 }

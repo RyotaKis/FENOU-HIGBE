@@ -3,6 +3,7 @@ import { FaEnvelope, FaHandshake, FaPhone, FaStore, FaUsers } from "react-icons/
 import type { IconType } from "react-icons";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { SectionHeading } from "@/components/SectionHeading";
+import { PageBackdrop } from "@/components/PageBackdrop";
 import { SocialLinks } from "@/components/SocialLinks";
 import { FENOU_HIGBE_SOCIALS } from "@/lib/socialLinks";
 import { Reveal } from "@/components/motion/Reveal";
@@ -53,6 +54,7 @@ export default async function ContactPage() {
   const numeros = telephone.split("·").map((n) => n.trim());
 
   return (
+    <PageBackdrop tone="orange">
     <div className="mx-auto max-w-4xl px-6 py-20 sm:px-10">
       <SectionHeading
         eyebrow={pick(hero, "eyebrow", "Une question ?")}
@@ -123,5 +125,6 @@ export default async function ContactPage() {
         </div>
       </Reveal>
     </div>
+    </PageBackdrop>
   );
 }

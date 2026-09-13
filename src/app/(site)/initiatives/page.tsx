@@ -3,6 +3,7 @@ import Image from "next/image";
 import { FaSeedling, FaStore } from "react-icons/fa";
 import type { IconType } from "react-icons";
 import { SectionHeading } from "@/components/SectionHeading";
+import { PageBackdrop } from "@/components/PageBackdrop";
 import { SocialLinks } from "@/components/SocialLinks";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
@@ -170,15 +171,14 @@ function AutreCard({ venture, delay }: { venture: Venture; delay: number }) {
 export default async function InitiativesPage() {
   const content = await getPageContent("initiatives");
   const hero = content.hero;
-  const bio = content.bio;
   const ventures = pickList(content, "ventures", DEFAULT_VENTURES);
- 
 
   const marques = ventures.filter((v) => v.category === "marque");
   const concours = ventures.filter((v) => v.category === "concours");
   const autres = ventures.filter((v) => v.category === "autre");
 
   return (
+    <PageBackdrop tone="green">
     <div className="mx-auto max-w-5xl px-6 py-20 sm:px-10">
       <SectionHeading
         eyebrow={pick(hero, "eyebrow", "L'écosystème Fenou")}
@@ -230,5 +230,6 @@ export default async function InitiativesPage() {
       )}
 
     </div>
+    </PageBackdrop>
   );
 }

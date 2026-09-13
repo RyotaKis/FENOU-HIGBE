@@ -22,6 +22,20 @@ export async function getNextEdition(): Promise<Edition | null> {
   }
 }
 
+export async function getEdition(id: string): Promise<Edition | null> {
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("editions")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    return data;
+  } catch {
+    return null;
+  }
+}
+
 export async function getAllEditions(): Promise<Edition[]> {
   try {
     const supabase = await createClient();
