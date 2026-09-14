@@ -53,5 +53,5 @@ Router) + TypeScript + Tailwind CSS v4 + Supabase.
 - Édition du contenu texte des pages (`page_content`) depuis l'admin.
 - Envoi automatique d'email pour les demandes de dossier partenariat (ex.
   Resend), aujourd'hui seulement enregistrées en base pour traitement manuel.
-- Déploiement (Vercel recommandé) et configuration des variables
+- Déploiement et configuration des variables
   d'environnement en production.
