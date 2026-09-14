@@ -43,3 +43,9 @@ next-env.d.ts
 
 # extraction temporaire de documents source (PDF client, captures) — pas des assets du site
 /.scratch_extract/
+
+# notes internes / config agent — gardées en local, jamais partagées via le repo
+/AGENTS.md
+/CLAUDE.md
+/CODEMAP.md
+/PROGRESS.md
