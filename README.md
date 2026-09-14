@@ -1,6 +1,6 @@
 # Fenou Higbé — site vitrine
 
-Site vitrine multi-pages pour le Fenou Higbé (marché itinérant des jeunes
+Site vitrine multi-pages pour le Fenou Higbé (marché des jeunes
 entrepreneurs béninois), avec panel d'administration. Stack : Next.js 16 (App
 Router) + TypeScript + Tailwind CSS v4 + Supabase.
 
