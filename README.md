@@ -67,11 +67,9 @@ Router) + TypeScript + Tailwind CSS v4 + Supabase.
 En plus d'un accès au dépôt GitHub, la personne qui héberge le site a
 seulement besoin des valeurs `NEXT_PUBLIC_SUPABASE_URL` et
 `NEXT_PUBLIC_SUPABASE_ANON_KEY` du projet Supabase existant (déjà
-configuré), transmises par un canal sécurisé (jamais commitées dans le
-dépôt), à renseigner dans les variables d'environnement de la plateforme
+configuré) à renseigner dans les variables d'environnement de la plateforme
 d'hébergement (Vercel, Netlify, etc.). Pas besoin d'accès au dashboard
 Supabase ni de créer un nouveau projet.
 
-La clé `anon` est conçue pour être publique (elle est de toute façon
-exposée côté navigateur) ; ne jamais partager ni exposer la
+La clé `anon` est conçue pour être publique; ne jamais partager ni exposer la
 `service_role key`.
