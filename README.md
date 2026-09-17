@@ -64,10 +64,14 @@ Router) + TypeScript + Tailwind CSS v4 + Supabase.
 
 ## Déploiement
 
-En plus d'un accès au dépôt GitHub, la personne qui héberge le site a besoin :
+En plus d'un accès au dépôt GitHub, la personne qui héberge le site a
+seulement besoin des valeurs `NEXT_PUBLIC_SUPABASE_URL` et
+`NEXT_PUBLIC_SUPABASE_ANON_KEY` du projet Supabase existant (déjà
+configuré), transmises par un canal sécurisé (jamais commitées dans le
+dépôt), à renseigner dans les variables d'environnement de la plateforme
+d'hébergement (Vercel, Netlify, etc.). Pas besoin d'accès au dashboard
+Supabase ni de créer un nouveau projet.
 
-- D'un accès au projet Supabase (dashboard), ou des valeurs
-  `NEXT_PUBLIC_SUPABASE_URL` et `NEXT_PUBLIC_SUPABASE_ANON_KEY` transmises par
-  un canal sécurisé (jamais commitées dans le dépôt).
-- De renseigner ces deux variables dans les paramètres d'environnement de la
-  plateforme d'hébergement (Vercel, Netlify, etc.).
+La clé `anon` est conçue pour être publique (elle est de toute façon
+exposée côté navigateur) ; ne jamais partager ni exposer la
+`service_role key`.
