@@ -7,8 +7,14 @@ Router) + TypeScript + Tailwind CSS v4 + Supabase.
 ## Démarrage
 
 1. Créer un projet sur [supabase.com](https://supabase.com).
-2. Copier `.env.local.example` vers `.env.local` et renseigner l'URL du
-   projet et la clé `anon` (Project Settings → API).
+2. Créer un fichier `.env.local` à la racine avec ces deux variables
+   (Project Settings → API sur Supabase) :
+
+   ```bash
+   NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=xxxxx
+   ```
+
 3. Exécuter `supabase/schema.sql` dans l'éditeur SQL Supabase (tables +
    policies RLS).
 4. Créer un utilisateur admin dans Supabase Auth (Authentication → Users →
@@ -55,3 +61,13 @@ Router) + TypeScript + Tailwind CSS v4 + Supabase.
   Resend), aujourd'hui seulement enregistrées en base pour traitement manuel.
 - Déploiement et configuration des variables
   d'environnement en production.
+
+## Déploiement
+
+En plus d'un accès au dépôt GitHub, la personne qui héberge le site a besoin :
+
+- D'un accès au projet Supabase (dashboard), ou des valeurs
+  `NEXT_PUBLIC_SUPABASE_URL` et `NEXT_PUBLIC_SUPABASE_ANON_KEY` transmises par
+  un canal sécurisé (jamais commitées dans le dépôt).
+- De renseigner ces deux variables dans les paramètres d'environnement de la
+  plateforme d'hébergement (Vercel, Netlify, etc.).
