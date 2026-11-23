@@ -108,6 +108,7 @@ export function ProgramGrid({
                       src={activity.image}
                       alt=""
                       fill
+                      sizes="(min-width: 640px) 60vw, 100vw"
                       className="absolute inset-0 -z-10 object-cover"
                     />
                     <div className="absolute inset-0 -z-10 bg-linear-to-t from-black/80 via-black/30 to-black/10" />
@@ -115,7 +116,13 @@ export function ProgramGrid({
                 )}
                 {activity.image && !big && (
                   <div className="relative -mx-6 -mt-6 mb-4 aspect-video overflow-hidden sm:-mx-8 sm:-mt-8">
-                    <Image src={activity.image} alt="" fill className="object-cover" />
+                    <Image
+                      src={activity.image}
+                      alt=""
+                      fill
+                      sizes="(min-width: 640px) 40vw, 100vw"
+                      className="object-cover"
+                    />
                   </div>
                 )}
                 {!activity.image && !big && activity.title !== "Fenou Xwé" && (
@@ -135,6 +142,7 @@ export function ProgramGrid({
                     alt="Fenou Xwé"
                     width={1707}
                     height={1116}
+                    sizes="120px"
                     className={`w-auto ${big ? "h-14" : "mt-4 h-10"}`}
                   />
                 ) : (

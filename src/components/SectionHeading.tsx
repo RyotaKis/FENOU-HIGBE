@@ -7,6 +7,8 @@ type SectionHeadingProps = {
   align?: "left" | "center";
   tone?: "light" | "dark";
   className?: string;
+  /** "h1" pour le titre principal d'une page (un seul par page). */
+  as?: "h1" | "h2";
 };
 
 export function SectionHeading({
@@ -16,6 +18,7 @@ export function SectionHeading({
   align = "left",
   tone = "light",
   className,
+  as: Heading = "h2",
 }: SectionHeadingProps) {
   const alignClass = align === "center" ? "mx-auto text-center" : "text-left";
   const introTone = tone === "dark" ? "text-white/80" : "text-neutral-600";
@@ -26,9 +29,9 @@ export function SectionHeading({
       {eyebrow && (
         <p className={`font-display text-lg italic ${eyebrowTone}`}>{eyebrow}</p>
       )}
-      <h2 className="mt-2 text-4xl font-bold leading-[0.95] tracking-tight sm:text-5xl">
+      <Heading className="mt-2 text-4xl font-bold leading-[0.95] tracking-tight sm:text-5xl">
         {title}
-      </h2>
+      </Heading>
       {intro && <p className={`mt-5 text-lg leading-relaxed ${introTone}`}>{intro}</p>}
     </Reveal>
   );

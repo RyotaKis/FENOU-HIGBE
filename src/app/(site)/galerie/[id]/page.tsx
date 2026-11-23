@@ -7,6 +7,14 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { PageBackdrop } from "@/components/PageBackdrop";
 import { BentoGrid } from "@/components/gallery/BentoGrid";
 
+/** Page mise en cache par Vercel et régénérée au plus toutes les 5 minutes. */
+export const revalidate = 300;
+
+// Pages générées à la première visite puis mises en cache (ISR).
+export async function generateStaticParams() {
+  return [];
+}
+
 type PageProps = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -31,6 +39,7 @@ export default async function EditionGaleriePage({ params }: PageProps) {
           ← Toutes les éditions
         </Link>
         <SectionHeading
+          as="h1"
           className="mt-6"
           eyebrow={new Date(edition.date_debut).toLocaleDateString("fr-FR", {
             day: "2-digit",

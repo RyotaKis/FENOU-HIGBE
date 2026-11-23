@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
+import { cache } from "react";
+import { createPublicClient } from "@/lib/supabase/public";
 import { DEFAULT_CHAPTER_ORDER, type ChapterKey } from "@/lib/homeLayout";
 
 export type SectionContent = Record<string, string>;
@@ -11,9 +12,9 @@ export type PageContentMap = Record<string, SectionContent>;
  * lignes — les pages appelantes gardent alors leur contenu par défaut.
  * Les sections "list" stockent leurs éléments sous `contenu.items`.
  */
-export async function getPageContent(pageSlug: string): Promise<PageContentMap> {
+export const getPageContent = cache(async (pageSlug: string): Promise<PageContentMap> => {
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data } = await supabase
       .from("page_content")
       .select("section_key, contenu")
@@ -27,7 +28,7 @@ export async function getPageContent(pageSlug: string): Promise<PageContentMap> 
   } catch {
     return {};
   }
-}
+});
 
 /** Retourne section[key] si non vide, sinon la valeur de repli fournie. */
 export function pick(

@@ -10,7 +10,13 @@ import { TiltCard } from "@/components/motion/TiltCard";
 import { getPageContent, pick, pickList } from "@/lib/pageContent";
 import { SOCIALS_BY_VENTURE } from "@/lib/socialLinks";
 
-export const metadata: Metadata = { title: "Initiatives & Filiales" };
+export const metadata: Metadata = {
+  title: "Initiatives & Filiales",
+  description: "Fenou Foods & Packaging, Fenou Moments, Startup Challenge, African Food Challenge, Fenou Xwé : l'écosystème porté par Sonita Tossou.",
+};
+
+/** Page mise en cache par Vercel et régénérée au plus toutes les 5 minutes. */
+export const revalidate = 300;
 
 type Venture = Record<string, string> & {
   name: string;
@@ -58,7 +64,7 @@ const DEFAULT_VENTURES: Venture[] = [
     applyHref: "/contact",
   },
   {
-    name: "Africa Food Challenge",
+    name: "African Food Challenge",
     year: "",
     category: "concours",
     description:
@@ -113,6 +119,7 @@ function VentureCard({ venture, delay }: { venture: Venture; delay: number }) {
               alt={venture.name}
               width={400}
               height={280}
+              sizes="400px"
               className="h-full w-auto object-contain"
             />
           </div>
@@ -181,6 +188,7 @@ export default async function InitiativesPage() {
     <PageBackdrop tone="green">
     <div className="mx-auto max-w-5xl px-6 py-20 sm:px-10">
       <SectionHeading
+        as="h1"
         eyebrow={pick(hero, "eyebrow", "L'écosystème Fenou")}
         title={pick(hero, "title", "Initiatives & Filiales")}
         intro={pick(

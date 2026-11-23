@@ -7,10 +7,38 @@ import { getPageContent, pick } from "@/lib/pageContent";
 import { SectionHeading } from "@/components/SectionHeading";
 import { PageBackdrop } from "@/components/PageBackdrop";
 import { PlaceholderImage } from "@/components/PlaceholderImage";
+import { BentoGrid } from "@/components/gallery/BentoGrid";
+import type { EditionPhoto } from "@/lib/types";
 import { Reveal } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
 
-export const metadata: Metadata = { title: "Galerie" };
+export const metadata: Metadata = {
+  title: "Galerie",
+  description: "Les temps forts du Fenou Higbé en images : marchés, concours, concerts et soirées.",
+};
+
+/** Page mise en cache par Vercel et régénérée au plus toutes les 5 minutes. */
+export const revalidate = 300;
+
+// Photos affichées tant qu'aucune photo n'a été ajoutée depuis l'admin
+// (Galerie photo). Elles disparaissent dès la première édition illustrée.
+const HIGHLIGHT_PHOTOS: EditionPhoto[] = [
+  ["neon-fenou.jpg", "L'enseigne lumineuse du Fenou Higbé, le soir"],
+  ["marche-fenou.jpg", "Foule de visiteurs au marché Fenou Higbé"],
+  ["caravane.jpg", "La Caravane des Entrepreneurs dans les rues de Cotonou"],
+  ["startup-challenge.jpg", "Pitch sur scène au Fenou Startup Challenge"],
+  ["food-challenge.jpg", "Concurrents de l'African Food Challenge"],
+  ["marche-stands-jour.jpg", "Allées de stands en journée"],
+  ["prestation-artiste.jpg", "Artiste en concert sur le grand podium"],
+  ["fenou-xwe-photo.jpg", "Ambiance de la soirée de clôture Fenou Xwé"],
+  ["hero.jpg", "Le public rassemblé devant la statue de l'Amazone"],
+].map(([file, alt], index) => ({
+  id: `highlight-${index}`,
+  edition_id: "highlights",
+  url: `/images/${file}`,
+  alt,
+  ordre: index,
+}));
 
 export default async function GaleriePage() {
   const [editions, photos, content] = await Promise.all([
@@ -35,12 +63,13 @@ export default async function GaleriePage() {
     <PageBackdrop tone="yellow">
       <div className="mx-auto max-w-6xl px-6 py-20 sm:px-10">
         <SectionHeading
+          as="h1"
           eyebrow={pick(hero, "eyebrow", "Ambiance")}
           title={pick(hero, "title", "Galerie")}
           intro={pick(
             hero,
             "intro",
-            "Photos et vidéos qui donnent envie d'y être — une bento grid par édition.",
+            "Les temps forts du Fenou Higbé en images, édition après édition.",
           )}
         />
 
@@ -57,6 +86,7 @@ export default async function GaleriePage() {
                           alt={edition.ville}
                           width={480}
                           height={360}
+                          sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                       ) : (
@@ -83,23 +113,12 @@ export default async function GaleriePage() {
             ))}
           </div>
         ) : (
-          <>
-            <p className="mt-10 text-neutral-400">
-              La galerie sera alimentée dès la première édition publiée depuis
-              l&apos;admin.
-            </p>
-            <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
-              {["Marché de nuit", "Stand d'exposant", "Podium culturel"].map(
-                (label) => (
-                  <PlaceholderImage
-                    key={label}
-                    description={label}
-                    aspectRatio="4/3"
-                  />
-                ),
-              )}
-            </div>
-          </>
+          <section className="mt-14" aria-labelledby="moments-forts">
+            <h2 id="moments-forts" className="text-2xl font-bold">
+              Moments forts 2026
+            </h2>
+            <BentoGrid photos={HIGHLIGHT_PHOTOS} />
+          </section>
         )}
       </div>
     </PageBackdrop>

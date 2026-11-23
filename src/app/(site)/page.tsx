@@ -1,17 +1,25 @@
 import Image from "next/image";
 import { Fragment } from "react";
-import { getAllEditions } from "@/lib/editions";
+import { getAllEditions, isEditionOver } from "@/lib/editions";
 import { getKeyStats } from "@/lib/content";
+
+/** Page mise en cache par Vercel et régénérée au plus toutes les 5 minutes. */
+export const revalidate = 300;
 import { getPageContent, getHomeLayout, pick, pickList } from "@/lib/pageContent";
 import type { ChapterKey } from "@/lib/homeLayout";
 import { ChapterSection } from "@/components/ChapterSection";
 import { SectionHeading } from "@/components/SectionHeading";
 import { CtaLink } from "@/components/CtaLink";
-import { PlaceholderImage } from "@/components/PlaceholderImage";
 import { Reveal } from "@/components/motion/Reveal";
 import { StatCounter } from "@/components/motion/StatCounter";
 import { HeroMedia } from "@/components/home/HeroMedia";
 import { HeroIntro, HeroIntroItem } from "@/components/home/HeroIntro";
+import { PartnersStrip } from "@/components/home/PartnersStrip";
+import { getPartners } from "@/lib/content";
+import heroLogo from "../../../public/logo/fenou-higbe-white.png";
+import commentsImage from "../../../public/images/comm.png";
+import standsImage from "../../../public/images/marche-stands-jour.jpg";
+import marcheImage from "../../../public/images/marche-fenou.jpg";
 import { ProgramGrid, DEFAULT_ACTIVITIES } from "@/components/home/ProgramGrid";
 import { TourTeaser } from "@/components/home/TourTeaser";
 import { FounderTeaser } from "@/components/home/FounderTeaser";
@@ -63,12 +71,20 @@ const DEFAULT_IMPACT_ITEMS = [
 ];
 
 export default async function AccueilPage() {
-  const [editions, stats, content, layout] = await Promise.all([
+  const [editions, stats, content, layout, partners] = await Promise.all([
     getAllEditions(),
     getKeyStats(),
     getPageContent("home"),
     getHomeLayout(),
+    getPartners(),
   ]);
+
+  // Le programme présenté est celui du Grand Fenou Higbé : une fois passé,
+  // la section devient un « retour sur » au lieu d'annoncer un événement fini.
+  const grandFenou = editions.find((edition) =>
+    /grand fenou higb/i.test(edition.description ?? ""),
+  );
+  const programmeOver = grandFenou ? isEditionOver(grandFenou) : false;
 
   const displayedStats = stats.length > 0 ? stats : FALLBACK_STATS;
 
@@ -135,14 +151,18 @@ export default async function AccueilPage() {
                 alt=""
                 width={640}
                 height={800}
+                sizes="(min-width: 1024px) 520px, 100vw"
                 className="h-auto w-full object-cover shadow-warm"
                 style={{ aspectRatio: "4/5" }}
               />
             ) : (
-              <PlaceholderImage
-                description="Jeune entrepreneure installant son stand au marché"
-                aspectRatio="4/5"
-                className="shadow-warm"
+              <Image
+                src={standsImage}
+                alt="Stands d'exposants au marché Fenou Higbé, en journée"
+                placeholder="blur"
+                sizes="(min-width: 1024px) 520px, 100vw"
+                className="h-auto w-full object-cover shadow-warm"
+                style={{ aspectRatio: "4/5" }}
               />
             )}
           </Reveal>
@@ -222,7 +242,7 @@ export default async function AccueilPage() {
                 {pick(
                   choixFort,
                   "body",
-                  "Le FENOU HIGBÉ leur ouvre les portes du marché à un coût symbolique, pour leur donner ce premier tremplin vers la réussite. Chaque mois, plusieurs jeunes entrepreneurs,et pas que, exposent, bénéficient d'un stand professionnel, de visibilité médiatique, et surtout d'un public prêt à consommer local.",
+                  "Le FENOU HIGBÉ leur ouvre les portes du marché à un coût symbolique, pour leur donner ce premier tremplin vers la réussite. Chaque mois, plusieurs jeunes entrepreneurs — et pas seulement — exposent, bénéficient d'un stand professionnel, de visibilité médiatique, et surtout d'un public prêt à consommer local.",
                 )}
               </p>
             </Reveal>
@@ -234,14 +254,18 @@ export default async function AccueilPage() {
                 alt=""
                 width={640}
                 height={800}
+                sizes="(min-width: 1024px) 520px, 100vw"
                 className="h-auto w-full object-cover shadow-warm"
                 style={{ aspectRatio: "4/5" }}
               />
             ) : (
-              <PlaceholderImage
-                description="Stand d'exposant coloré, produits artisanaux béninois"
-                aspectRatio="4/5"
-                className="shadow-warm"
+              <Image
+                src={marcheImage}
+                alt="Visiteurs entre les stands du marché Fenou Higbé"
+                placeholder="blur"
+                sizes="(min-width: 1024px) 520px, 100vw"
+                className="h-auto w-full object-cover shadow-warm"
+                style={{ aspectRatio: "4/5" }}
               />
             )}
           </Reveal>
@@ -285,10 +309,10 @@ export default async function AccueilPage() {
             </ul>
             <Reveal delay={0.3} className="mx-auto w-full max-w-[280px] lg:mx-0">
               <Image
-                src="/images/comm.png"
+                src={commentsImage}
                 alt="Commentaires de visiteurs sur les réseaux sociaux, saluant l'organisation et l'ambiance du Fenou Higbé"
-                width={900}
-                height={1100}
+                placeholder="blur"
+                sizes="280px"
                 className="h-auto w-full"
               />
             </Reveal>
@@ -303,13 +327,23 @@ export default async function AccueilPage() {
           eyebrow={pick(
             programme,
             "eyebrow",
-            "27 octobre – 1er novembre 2026 · Cotonou",
+            programmeOver
+              ? "Retour sur · 27 octobre – 1er novembre 2026 · Cotonou"
+              : "27 octobre – 1er novembre 2026 · Cotonou",
           )}
-          title={pick(programme, "title", "Le Grand Fenou Higbé, 4ème édition")}
+          title={pick(
+            programme,
+            "title",
+            programmeOver
+              ? "Le Grand Fenou Higbé 2026, c'était ça"
+              : "Le Grand Fenou Higbé, 4ème édition",
+          )}
           intro={pick(
             programme,
             "intro",
-            "Une semaine de programme, du coup d'envoi festif à la grande fête de clôture.",
+            programmeOver
+              ? "Une semaine de programme, du coup d'envoi festif à la grande fête de clôture. Merci aux exposants et aux visiteurs — rendez-vous à la prochaine édition !"
+              : "Une semaine de programme, du coup d'envoi festif à la grande fête de clôture.",
           )}
           tone="dark"
         />
@@ -339,6 +373,7 @@ export default async function AccueilPage() {
           )}
         />
         <TourTeaser editions={editions} />
+        <PartnersStrip partners={partners} />
       </ChapterSection>
     ),
 
@@ -376,16 +411,16 @@ export default async function AccueilPage() {
         <HeroMedia overrideImage={hero?.image} />
         <HeroIntro>
           <div className="max-w-2xl">
-            <HeroIntroItem>  
-              <Reveal delay={0.3} className="mx-auto w-full max-w-[500px] lg:mx-0">
-              <Image
-                src="/logo/fenou-higbe-white.png"
-                alt="Commentaires de visiteurs sur les réseaux sociaux, saluant l'organisation et l'ambiance du Fenou Higbé"
-                width={900}
-                height={1100}
-                className="h-auto w-full"
-              />
-            </Reveal>
+            <HeroIntroItem>
+              <h1 className="mx-auto w-full max-w-[500px] lg:mx-0">
+                <Image
+                  src={heroLogo}
+                  alt="Fenou Higbé — le marché des jeunes entrepreneurs béninois"
+                  priority
+                  sizes="(min-width: 640px) 500px, 90vw"
+                  className="h-auto w-full"
+                />
+              </h1>
             </HeroIntroItem>
 
             <HeroIntroItem className="mt-8 flex flex-wrap gap-4">

@@ -11,7 +11,13 @@ import { TiltCard } from "@/components/motion/TiltCard";
 import { getPageContent, pick } from "@/lib/pageContent";
 import { getWhatsAppLink } from "@/lib/whatsapp";
 
-export const metadata: Metadata = { title: "Contact" };
+export const metadata: Metadata = {
+  title: "Contact",
+  description: "Devenir exposant ou partenaire du Fenou Higbé, ou simplement nous écrire : WhatsApp, téléphone, e-mail et formulaire.",
+};
+
+/** Page mise en cache par Vercel et régénérée au plus toutes les 5 minutes. */
+export const revalidate = 300;
 
 type WhatsAppCta = {
   icon: IconType;
@@ -57,6 +63,7 @@ export default async function ContactPage() {
     <PageBackdrop tone="orange">
     <div className="mx-auto max-w-4xl px-6 py-20 sm:px-10">
       <SectionHeading
+        as="h1"
         eyebrow={pick(hero, "eyebrow", "Une question ?")}
         title={pick(hero, "title", "Contact")}
         intro={pick(

@@ -1,7 +1,4 @@
-"use client";
-
-import { motion, useReducedMotion } from "motion/react";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 type FadeInProps = {
   children: ReactNode;
@@ -10,18 +7,12 @@ type FadeInProps = {
   y?: number;
 };
 
-/** Entrance animation that fires immediately on mount (not scroll-triggered). */
+/** Apparition au chargement, en CSS pur (aucune attente du JavaScript). */
 export function FadeIn({ children, className, delay = 0, y = -12 }: FadeInProps) {
-  const shouldReduceMotion = useReducedMotion();
-
+  const style = { "--fade-y": `${y}px`, animationDelay: `${delay}s` } as CSSProperties;
   return (
-    <motion.div
-      className={className}
-      initial={shouldReduceMotion ? false : { opacity: 0, y }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <div className={`fade-in ${className ?? ""}`} style={style}>
       {children}
-    </motion.div>
+    </div>
   );
 }

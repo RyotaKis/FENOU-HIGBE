@@ -1,17 +1,15 @@
 import Link from "next/link";
 import type { Edition } from "@/lib/types";
+import { isEditionOver, isEditionRunning } from "@/lib/editions";
 import { Reveal } from "@/components/motion/Reveal";
 
 function getUpcomingEditions(editions: Edition[]) {
-  const now = Date.now();
   return editions
-    .filter((edition) => new Date(edition.date_fin).getTime() >= now)
+    .filter((edition) => !isEditionOver(edition))
     .map((edition) => ({
       ...edition,
-      isCurrent:
-        now >= new Date(edition.date_debut).getTime() &&
-        now <= new Date(edition.date_fin).getTime(),
-      isFlagship: /grand fenou higb/i.test(edition.description ?? ""),
+      isCurrent: isEditionRunning(edition),
+      isFlagship: /grand fenou higb|marché de noël/i.test(edition.description ?? ""),
     }))
     .slice(0, 4);
 }
@@ -80,11 +78,11 @@ export function TourTeaser({ editions }: { editions: Edition[] }) {
         </div>
       ) : (
         <p className="text-sm text-neutral-400">
-          Fenou TOUR 2027: Surveillez les nuages, le calendrier vient.
+          Le calendrier du prochain Tour arrive bientôt — suivez-nous sur les réseaux pour ne rien manquer.
         </p>
       )}
       <Link
-        href="/tour-2027"
+        href="/tour-2026"
         className="mt-10 inline-block text-xs font-semibold uppercase tracking-caps text-neutral-900 underline underline-offset-4 hover:text-brand-orange"
       >
         Voir toutes les étapes →

@@ -60,12 +60,27 @@ export function StatCounter({
   // ce qui relance l'effet ci-dessous (donc l'animation) en boucle infinie
   // puisque `parsed` est dans ses dépendances.
   const parsed = useMemo(() => parseStat(value), [value]);
+  // Rendu serveur = valeur finale : le chiffre réel est visible sans
+  // JavaScript (et lisible par Google). L'animation de 0 à la valeur ne se
+  // joue que si le compteur est encore hors de l'écran au chargement.
   const [display, setDisplay] = useState(
-    parsed ? formatNumber(0, parsed) : value,
+    parsed ? formatNumber(parsed.target, parsed) : value,
   );
+  const [armed, setArmed] = useState(false);
 
   useEffect(() => {
-    if (!parsed || !isInView || shouldReduceMotion) return;
+    if (!parsed || shouldReduceMotion || !ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    if (rect.top > window.innerHeight) {
+      setDisplay(formatNumber(0, parsed));
+      setArmed(true);
+    }
+    // Volontairement exécuté une seule fois, au montage.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!parsed || !armed || !isInView || shouldReduceMotion) return;
 
     let frame: number;
     const start = performance.now();
@@ -82,7 +97,7 @@ export function StatCounter({
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [isInView, parsed, shouldReduceMotion, duration]);
+  }, [armed, isInView, parsed, shouldReduceMotion, duration]);
 
   const renderedDigits =
     parsed && shouldReduceMotion ? formatNumber(parsed.target, parsed) : display;

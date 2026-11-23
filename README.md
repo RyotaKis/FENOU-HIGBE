@@ -73,3 +73,17 @@ Supabase ni de créer un nouveau projet.
 
 La clé `anon` est conçue pour être publique; ne jamais partager ni exposer la
 `service_role key`.
+
+## Mise à jour du 23/11/2026 — à faire une fois dans Supabase
+
+1. **Authentication → Users** : vérifier que seuls les comptes de l'équipe
+   sont présents (supprimer les inconnus).
+2. **Authentication → Sign In / Providers** : désactiver
+   « Allow new users to sign up » (personne ne doit pouvoir créer un compte).
+3. **SQL Editor** : exécuter `supabase/migrations/2026-11-23_securite.sql`
+   (droits admin réservés à la table `admins`, formulaires sécurisés).
+4. **SQL Editor** : exécuter `supabase/seed-editions-2026.sql` (calendrier
+   2026 modifiable depuis l'admin, photos rattachables aux éditions).
+
+Optionnel : variable `NEXT_PUBLIC_SITE_URL` sur Vercel si le site passe sur
+un nom de domaine personnalisé (aperçus de partage et sitemap).

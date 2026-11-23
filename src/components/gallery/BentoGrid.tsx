@@ -40,6 +40,7 @@ export function BentoGrid({ photos }: { photos: EditionPhoto[] }) {
                 alt={photo.alt ?? ""}
                 width={480}
                 height={480}
+                sizes="50vw"
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
             </button>

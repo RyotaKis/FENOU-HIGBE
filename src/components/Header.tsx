@@ -4,15 +4,12 @@ import { getNextEdition } from "@/lib/editions";
 import { getSiteLogo } from "@/lib/pageContent";
 import { Countdown } from "@/components/Countdown";
 import { MobileNav } from "@/components/MobileNav";
-import { FadeIn } from "@/components/motion/FadeIn";
 
 const NAV_LINKS = [
   { href: "/", label: "Accueil" },
   { href: "/tour-2026", label: "Tour 2026" },
   { href: "/galerie", label: "Galerie" },
   { href: "/initiatives", label: "Initiatives" },
-  { href: "/exposants", label: "Exposants" },
-  { href: "/partenaires", label: "Partenaires" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -21,12 +18,11 @@ export async function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      <FadeIn>
       {nextEdition && (
         <div className="bg-ink px-4 py-2">
           <div className="mx-auto flex max-w-6xl items-center justify-center">
             <Countdown
-              targetIso={nextEdition.date_debut}
+              targetIso={`${nextEdition.date_debut}T00:00:00+01:00`}
               ville={nextEdition.ville}
             />
           </div>
@@ -41,6 +37,7 @@ export async function Header() {
               width={608}
               height={306}
               priority
+              sizes="72px"
               className="h-9 w-auto"
             />
           </Link>
@@ -60,7 +57,6 @@ export async function Header() {
           <MobileNav links={NAV_LINKS} />
         </nav>
       </div>
-      </FadeIn>
     </header>
   );
 }

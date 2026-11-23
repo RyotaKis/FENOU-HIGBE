@@ -160,3 +160,9 @@ create policy "admin delete site-content" on storage.objects
 -- ─────────────────────────────────────────────────────────────────────────
 -- drop table if exists applicants;
 -- drop table if exists partnership_requests;
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- IMPORTANT — après ce fichier, exécuter dans l'ordre :
+--   1. supabase/migrations/2026-11-23_securite.sql (droits admin + formulaires)
+--   2. supabase/seed-editions-2026.sql (calendrier du Tour 2026)
+-- ─────────────────────────────────────────────────────────────────────────

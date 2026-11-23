@@ -26,6 +26,7 @@ export async function Footer() {
             alt="Fenou Higbé"
             width={608}
             height={306}
+            sizes="80px"
             className="h-10 w-auto"
           />
           <p className="mt-4 max-w-sm text-sm text-neutral-400">

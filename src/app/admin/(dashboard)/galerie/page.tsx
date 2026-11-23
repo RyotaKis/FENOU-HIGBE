@@ -1,4 +1,4 @@
-import { getAllEditions } from "@/lib/editions";
+import { getStoredEditions } from "@/lib/editions";
 import { getEditionPhotos } from "@/lib/content";
 import { deleteEditionPhoto } from "@/app/admin/actions";
 import { GalleryUploader } from "@/components/admin/GalleryUploader";
@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default async function AdminGaleriePage() {
   const [editions, photos] = await Promise.all([
-    getAllEditions(),
+    getStoredEditions(),
     getEditionPhotos(),
   ]);
 

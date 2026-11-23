@@ -20,6 +20,7 @@ export function FounderTeaser({ quote, bio, image }: FounderTeaserProps) {
         alt="Portrait de Sonita Tossou, fondatrice du Fenou Higbé"
         width={320}
         height={427}
+        sizes="(min-width: 640px) 320px, 100vw"
         className="h-auto w-full object-cover"
         style={{ aspectRatio: "3/4" }}
       />
@@ -35,7 +36,7 @@ export function FounderTeaser({ quote, bio, image }: FounderTeaserProps) {
         </blockquote>
         <p className="mt-4 text-neutral-600">
           {bio ||
-            "Sonita Tossou, entrepreneure béninoise, fondatrice de Fenou Industries,Fenou Foods & Packaging et du Fenou Higbé."}
+            "Sonita Tossou, entrepreneure béninoise, fondatrice de Fenou Industries, Fenou Foods & Packaging et du Fenou Higbé."}
         </p>
         <Link
           href="/initiatives"

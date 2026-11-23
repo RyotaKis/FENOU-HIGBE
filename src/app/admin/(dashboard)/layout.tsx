@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/supabase/admin";
 import { getSiteLogo } from "@/lib/pageContent";
 import { logout } from "@/app/admin/actions";
 
@@ -41,7 +42,7 @@ export default async function AdminDashboardLayout({
   } = await supabase.auth.getUser();
 
   // Défense en profondeur : le proxy protège déjà /admin/*, on revérifie ici.
-  if (!user) redirect("/admin/login");
+  if (!user || !(await isAdmin(supabase))) redirect("/admin/login");
 
   const logo = await getSiteLogo();
 

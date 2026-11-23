@@ -50,9 +50,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (user && isLoginPage) {
-    return NextResponse.redirect(new URL("/admin", request.url));
-  }
+  // Un compte connecté sur la page de login est renvoyé vers /admin par la
+  // page elle-même, seulement s'il est bien administrateur (sinon boucle).
 
   return response;
 }

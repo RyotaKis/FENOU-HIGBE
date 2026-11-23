@@ -1,3 +1,5 @@
+import { getWhatsAppLink, SONITA_WHATSAPP_NUMBER } from "@/lib/whatsapp";
+
 export type SocialPlatform =
   | "facebook"
   | "instagram"
@@ -11,11 +13,11 @@ export type SocialLink = { platform: SocialPlatform; href: string };
 export const FENOU_HIGBE_SOCIALS: SocialLink[] = [
   { platform: "facebook", href: "https://www.facebook.com/fenouhigbe/" },
   { platform: "tiktok", href: "https://www.tiktok.com/@fenouhigbe.officiel" },
-  { platform: "whatsapp", href: "https://wa.me/22961016673" },
+  { platform: "whatsapp", href: getWhatsAppLink() },
 ];
 
 export const FOODS_PACKAGING_SOCIALS: SocialLink[] = [
-  { platform: "whatsapp", href: "https://wa.me/22961016673" },
+  { platform: "whatsapp", href: getWhatsAppLink() },
   { platform: "facebook", href: "https://www.facebook.com/fenoupackaging" },
 ];
 
@@ -34,7 +36,7 @@ export const SONITA_SOCIALS: SocialLink[] = [
   { platform: "instagram", href: "https://www.instagram.com/sonita.bidossessi/" },
   { platform: "tiktok", href: "https://www.tiktok.com/@mme.maccron" },
   { platform: "linkedin", href: "https://www.linkedin.com/in/sonita-tossou-0a1413194/" },
-  { platform: "whatsapp", href: "https://wa.me/22997351639" },
+  { platform: "whatsapp", href: getWhatsAppLink(undefined, SONITA_WHATSAPP_NUMBER) },
 ];
 
 export const SOCIALS_BY_VENTURE: Record<string, SocialLink[]> = {

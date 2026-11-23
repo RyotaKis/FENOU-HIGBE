@@ -1,9 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
+import { cache } from "react";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { EditionPhoto, KeyStat, Partner } from "@/lib/types";
 
-export async function getPartners(): Promise<Partner[]> {
+export const getPartners = cache(async (): Promise<Partner[]> => {
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data } = await supabase
       .from("partners")
       .select("*")
@@ -13,11 +14,11 @@ export async function getPartners(): Promise<Partner[]> {
   } catch {
     return [];
   }
-}
+});
 
-export async function getKeyStats(): Promise<KeyStat[]> {
+export const getKeyStats = cache(async (): Promise<KeyStat[]> => {
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data } = await supabase
       .from("stats")
       .select("*")
@@ -26,11 +27,11 @@ export async function getKeyStats(): Promise<KeyStat[]> {
   } catch {
     return [];
   }
-}
+});
 
 export async function getEditionPhotos(editionId?: string): Promise<EditionPhoto[]> {
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     let query = supabase
       .from("edition_photos")
       .select("*")

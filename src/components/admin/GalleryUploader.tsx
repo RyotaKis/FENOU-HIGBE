@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { revalidateGallery } from "@/app/admin/actions";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { compressImage } from "@/lib/compressImage";
@@ -80,6 +81,7 @@ export function GalleryUploader({ editions }: { editions: EditionOption[] }) {
     }
 
     setUploading(false);
+    await revalidateGallery();
     router.refresh();
   };
 

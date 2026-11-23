@@ -9,6 +9,9 @@ import { getPageContent, pick } from "@/lib/pageContent";
 
 export const metadata: Metadata = { title: "Tour 2026" };
 
+/** Page mise en cache par Vercel et régénérée au plus toutes les 5 minutes. */
+export const revalidate = 300;
+
 const STATUS_LABEL: Record<EditionStatus, string> = {
   a_venir: "À venir",
   en_cours: "En cours",
@@ -21,118 +24,22 @@ const STATUS_STYLE: Record<EditionStatus, string> = {
   terminee: "bg-neutral-200 text-neutral-600",
 };
 
-function deriveStatus(dateDebut: string, dateFin: string): EditionStatus {
-  const now = Date.now();
-  const start = new Date(dateDebut).getTime();
-  const end = new Date(dateFin).getTime();
-  if (now < start) return "a_venir";
-  if (now > end) return "terminee";
-  return "en_cours";
+function isFlagshipEdition(edition: Edition) {
+  return /grand fenou higb|marché de noël/i.test(edition.description ?? "");
 }
 
-// TODO(content): remove once editions are seeded in Supabase admin.
-// Dev-only fallback so the page reflects the real 2026 tour before content entry.
-const FALLBACK_EDITIONS: Edition[] = [
-  {
-    id: "fallback-cotonou-fev",
-    ville: "Cotonou",
-    date_debut: "2026-02-05",
-    date_fin: "2026-02-08",
-    statut: deriveStatus("2026-02-05", "2026-02-08"),
-    cover_image_url: null,
-    description: "Festival de la Jeunesse et de la Musique (FEJEM 4).",
-    ordre: 1,
-  },
-  {
-    id: "fallback-porto-novo",
-    ville: "Porto-Novo",
-    date_debut: "2026-04-02",
-    date_fin: "2026-04-06",
-    statut: deriveStatus("2026-04-02", "2026-04-06"),
-    cover_image_url: null,
-    description: null,
-    ordre: 2,
-  },
-  {
-    id: "fallback-abomey",
-    ville: "Abomey",
-    date_debut: "2026-05-07",
-    date_fin: "2026-05-10",
-    statut: deriveStatus("2026-05-07", "2026-05-10"),
-    cover_image_url: null,
-    description: null,
-    ordre: 3,
-  },
-  {
-    id: "fallback-ouidah",
-    ville: "Ouidah",
-    date_debut: "2026-06-25",
-    date_fin: "2026-06-28",
-    statut: deriveStatus("2026-06-25", "2026-06-28"),
-    cover_image_url: null,
-    description: null,
-    ordre: 4,
-  },
-  {
-    id: "fallback-parakou",
-    ville: "Parakou",
-    date_debut: "2026-07-16",
-    date_fin: "2026-07-19",
-    statut: deriveStatus("2026-07-16", "2026-07-19"),
-    cover_image_url: null,
-    description: null,
-    ordre: 5,
-  },
-  {
-    id: "fallback-bohicon",
-    ville: "Bohicon",
-    date_debut: "2026-08-13",
-    date_fin: "2026-08-16",
-    statut: deriveStatus("2026-08-13", "2026-08-16"),
-    cover_image_url: null,
-    description: null,
-    ordre: 6,
-  },
-  {
-    id: "fallback-grand-fenou-higbe",
-    ville: "Cotonou — Place de l'Amazone",
-    date_debut: "2026-10-27",
-    date_fin: "2026-11-01",
-    statut: deriveStatus("2026-10-27", "2026-11-01"),
-    cover_image_url: null,
-    description:
-      "Grand Fenou Higbé, 4ème édition — le rendez-vous phare de l'année.",
-    ordre: 7,
-  },
-  {
-    id: "fallback-marche-noel",
-    ville: "Cotonou — Palais des Congrès",
-    date_debut: "2026-12-22",
-    date_fin: "2026-12-25",
-    statut: deriveStatus("2026-12-22", "2026-12-25"),
-    cover_image_url: null,
-    description: "Le Marché de Noël, 3ème édition.",
-    ordre: 8,
-  },
-];
-
-const FLAGSHIP_IDS = new Set([
-  "fallback-grand-fenou-higbe",
-  "fallback-marche-noel",
-]);
-
 export default async function Tour2026Page() {
-  const [fetched, content] = await Promise.all([
+  const [editions, content] = await Promise.all([
     getAllEditions(),
     getPageContent("tour-2026"),
   ]);
-  const editions = fetched.length > 0 ? fetched : FALLBACK_EDITIONS;
   const hero = content.hero;
 
   return (
     <PageBackdrop tone="yellow">
     <div className="mx-auto max-w-4xl px-6 py-20 sm:px-10">
       <SectionHeading
+        as="h1"
         eyebrow={pick(hero, "eyebrow", "Fenou Higbé")}
         title={pick(hero, "title", "Tour 2026")}
         intro={pick(
@@ -145,7 +52,7 @@ export default async function Tour2026Page() {
       <TimelineProgress>
       <ol className="relative mt-16 space-y-10 pl-8">
         {editions.map((edition, index) => {
-          const isFlagship = FLAGSHIP_IDS.has(edition.id);
+          const isFlagship = isFlagshipEdition(edition);
           return (
             <Reveal key={edition.id} delay={index * 0.05}>
               <li className="relative">

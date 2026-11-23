@@ -3,6 +3,8 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/supabase/admin";
+import { deriveStatus } from "@/lib/editions";
 import type { FieldDef } from "@/lib/pageContentSchema";
 import { DEFAULT_CHAPTER_ORDER, type ChapterKey } from "@/lib/homeLayout";
 
@@ -12,8 +14,45 @@ async function requireAdmin() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("Unauthorized");
+  if (!user || !(await isAdmin(supabase))) throw new Error("Accès réservé aux administrateurs.");
   return supabase;
+}
+
+/** Transforme une erreur Supabase silencieuse en message visible dans l'admin. */
+function assertOk(result: { error: { message: string } | null }, action: string) {
+  if (result.error) {
+    throw new Error(`${action} : échec de l'enregistrement (${result.error.message}).`);
+  }
+}
+
+/** Pages publiques qui affichent les éditions du Tour. */
+function revalidateEditions() {
+  revalidatePath("/admin/editions");
+  revalidatePath("/tour-2026");
+  revalidatePath("/galerie");
+  revalidatePath("/");
+}
+
+function readEditionForm(formData: FormData) {
+  const ville = String(formData.get("ville") ?? "").trim();
+  const date_debut = String(formData.get("date_debut") ?? "");
+  const date_fin = String(formData.get("date_fin") ?? "");
+  const description = String(formData.get("description") ?? "").trim();
+  if (!ville || !date_debut || !date_fin) {
+    throw new Error("Ville, date de début et date de fin sont obligatoires.");
+  }
+  if (date_fin < date_debut) {
+    throw new Error("La date de fin doit être après la date de début.");
+  }
+  return {
+    ville,
+    date_debut,
+    date_fin,
+    // Le statut affiché sur le site est recalculé d'après les dates ;
+    // on le stocke quand même pour garder la colonne cohérente.
+    statut: deriveStatus(date_debut, date_fin),
+    description: description || null,
+  };
 }
 
 export async function login(_prevState: unknown, formData: FormData) {
@@ -30,6 +69,11 @@ export async function login(_prevState: unknown, formData: FormData) {
     return { error: "Identifiants invalides." };
   }
 
+  if (!(await isAdmin(supabase))) {
+    await supabase.auth.signOut();
+    return { error: "Ce compte n'a pas accès à l'administration." };
+  }
+
   redirect("/admin");
 }
 
@@ -41,35 +85,22 @@ export async function logout() {
 
 export async function createEdition(formData: FormData) {
   const supabase = await requireAdmin();
+  const edition = readEditionForm(formData);
+  assertOk(await supabase.from("editions").insert({ ...edition, ordre: 0 }), "Ajout de l'édition");
+  revalidateEditions();
+}
 
-  const ville = String(formData.get("ville") ?? "").trim();
-  const date_debut = String(formData.get("date_debut") ?? "");
-  const date_fin = String(formData.get("date_fin") ?? "");
-  const statut = String(formData.get("statut") ?? "a_venir");
-  const description = String(formData.get("description") ?? "").trim();
-
-  if (!ville || !date_debut || !date_fin) return;
-
-  await supabase.from("editions").insert({
-    ville,
-    date_debut,
-    date_fin,
-    statut,
-    description: description || null,
-    ordre: 0,
-  });
-
-  revalidatePath("/admin/editions");
-  revalidatePath("/tour-2026");
-  revalidatePath("/");
+export async function updateEdition(id: string, formData: FormData) {
+  const supabase = await requireAdmin();
+  const edition = readEditionForm(formData);
+  assertOk(await supabase.from("editions").update(edition).eq("id", id), "Modification de l'édition");
+  revalidateEditions();
 }
 
 export async function deleteEdition(id: string) {
   const supabase = await requireAdmin();
-  await supabase.from("editions").delete().eq("id", id);
-  revalidatePath("/admin/editions");
-  revalidatePath("/tour-2026");
-  revalidatePath("/");
+  assertOk(await supabase.from("editions").delete().eq("id", id), "Suppression de l'édition");
+  revalidateEditions();
 }
 
 export async function createPartner(formData: FormData) {
@@ -79,19 +110,24 @@ export async function createPartner(formData: FormData) {
   const logo_url = String(formData.get("logo_url") ?? "").trim();
   const site_url = String(formData.get("site_url") ?? "").trim();
 
-  if (!nom || !logo_url) return;
+  if (!nom || !logo_url) throw new Error("Le nom et l'URL du logo sont obligatoires.");
 
-  await supabase
-    .from("partners")
-    .insert({ nom, logo_url, site_url: site_url || null, actif: true, ordre: 0 });
+  assertOk(
+    await supabase
+      .from("partners")
+      .insert({ nom, logo_url, site_url: site_url || null, actif: true, ordre: 0 }),
+    "Ajout du partenaire",
+  );
 
   revalidatePath("/admin/partenaires");
+  revalidatePath("/");
 }
 
 export async function deletePartner(id: string) {
   const supabase = await requireAdmin();
-  await supabase.from("partners").delete().eq("id", id);
+  assertOk(await supabase.from("partners").delete().eq("id", id), "Suppression du partenaire");
   revalidatePath("/admin/partenaires");
+  revalidatePath("/");
 }
 
 export async function createStat(formData: FormData) {
@@ -100,9 +136,9 @@ export async function createStat(formData: FormData) {
   const label = String(formData.get("label") ?? "").trim();
   const valeur = String(formData.get("valeur") ?? "").trim();
 
-  if (!label || !valeur) return;
+  if (!label || !valeur) throw new Error("Le libellé et la valeur sont obligatoires.");
 
-  await supabase.from("stats").insert({ label, valeur, ordre: 0 });
+  assertOk(await supabase.from("stats").insert({ label, valeur, ordre: 0 }), "Ajout du chiffre");
 
   revalidatePath("/admin/chiffres");
   revalidatePath("/");
@@ -110,7 +146,7 @@ export async function createStat(formData: FormData) {
 
 export async function deleteStat(id: string) {
   const supabase = await requireAdmin();
-  await supabase.from("stats").delete().eq("id", id);
+  assertOk(await supabase.from("stats").delete().eq("id", id), "Suppression du chiffre");
   revalidatePath("/admin/chiffres");
   revalidatePath("/");
 }
@@ -136,7 +172,7 @@ export async function saveSectionContent(
     contenu[field.key] = String(formData.get(field.key) ?? "").trim();
   }
 
-  await supabase.from("page_content").upsert(
+  const result = await supabase.from("page_content").upsert(
     {
       page_slug: pageSlug,
       section_key: sectionKey,
@@ -145,9 +181,12 @@ export async function saveSectionContent(
     },
     { onConflict: "page_slug,section_key" },
   );
+  assertOk(result, "Enregistrement du contenu");
 
   revalidatePath(`/admin/contenu/${pageSlug}`);
-  revalidatePath(pageSlug === "home" ? "/" : `/${pageSlug}`);
+  // Les réglages globaux (logo) apparaissent sur toutes les pages.
+  if (pageSlug === "site") revalidatePath("/", "layout");
+  else revalidatePath(pageSlug === "home" ? "/" : `/${pageSlug}`);
 }
 
 async function getListItems(
@@ -172,7 +211,7 @@ async function saveListItems(
   sectionKey: string,
   items: Record<string, string>[],
 ) {
-  await supabase.from("page_content").upsert(
+  const result = await supabase.from("page_content").upsert(
     {
       page_slug: pageSlug,
       section_key: sectionKey,
@@ -181,6 +220,7 @@ async function saveListItems(
     },
     { onConflict: "page_slug,section_key" },
   );
+  assertOk(result, "Enregistrement du contenu");
 
   revalidatePath(`/admin/contenu/${pageSlug}`);
   revalidatePath(pageSlug === "home" ? "/" : `/${pageSlug}`);
@@ -207,9 +247,10 @@ export async function addListItem(
 
 export async function deleteEditionPhoto(id: string) {
   const supabase = await requireAdmin();
-  await supabase.from("edition_photos").delete().eq("id", id);
+  assertOk(await supabase.from("edition_photos").delete().eq("id", id), "Suppression de la photo");
   revalidatePath("/admin/galerie");
   revalidatePath("/galerie");
+  revalidatePath("/galerie/[id]", "page");
 }
 
 /** Supprime l'élément à l'index donné d'une section de type "list". */
@@ -247,7 +288,7 @@ async function saveLayout(
   supabase: Awaited<ReturnType<typeof createClient>>,
   layout: HomeLayoutData,
 ) {
-  await supabase.from("page_content").upsert(
+  const result = await supabase.from("page_content").upsert(
     {
       page_slug: "home",
       section_key: "_layout",
@@ -256,6 +297,7 @@ async function saveLayout(
     },
     { onConflict: "page_slug,section_key" },
   );
+  assertOk(result, "Enregistrement du contenu");
   revalidatePath("/admin/mise-en-page");
   revalidatePath("/");
 }
@@ -286,4 +328,12 @@ export async function toggleChapterHidden(key: ChapterKey) {
     hidden.add(key);
   }
   await saveLayout(supabase, { ...layout, hidden: [...hidden] });
+}
+
+/** Rafraîchit la galerie publique après un envoi de photos depuis l'admin. */
+export async function revalidateGallery() {
+  await requireAdmin();
+  revalidatePath("/admin/galerie");
+  revalidatePath("/galerie");
+  revalidatePath("/galerie/[id]", "page");
 }

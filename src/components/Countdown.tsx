@@ -54,7 +54,7 @@ export function Countdown({
       <span className="hidden text-xs font-medium uppercase tracking-caps text-white/60 sm:inline">
         Prochaine édition — {ville}
       </span>
-      <div className="flex items-center gap-4" aria-live="polite">
+      <div className="flex items-center gap-4" aria-hidden="true">
         {UNITS.map((unit) => (
           <div key={unit.key} className="text-center">
             <span className="tabular-nums font-display text-lg font-semibold text-brand-yellow">
